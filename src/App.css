@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+.card-box{
+  height:260px;
+  margin-top: 10px;
+  overflow-x: auto;
+  position: relative
+}
+
+.card{
+  font-size: 75%;
+  width: 340px;
+  height: 220px;
+  margin-right: 20px;
+  border: 1px solid black;
+}
+
+.form-input {
+  width: 100%;
+}
+
+.form-input-content {
+  height: 45%;
+}

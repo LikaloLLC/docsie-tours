@@ -1,0 +1,16 @@
+
+  <body>
+    <button onclick="on()">ON</button>
+    <button onclick="off()">OFF</button>
+  </body>
+
+
+<script>
+  function on() {
+    chrome.storage.local.set({ state: "on" });
+  }
+  function off() {
+    chrome.storage.local.set({ state: "off" });
+  }
+</script>
+
