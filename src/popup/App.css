@@ -37,25 +37,25 @@
   }
 }
 
-.card-box{
-  height:260px;
-  margin-top: 10px;
-  overflow-x: auto;
-  position: relative
+.main {
+  width: 300px;
+  height: 230px;
+  margin-top: 15px;
 }
-
-.card{
-  font-size: 75%;
-  width: 340px;
-  height: 220px;
-  margin-right: 20px;
-  border: 1px solid black;
+.menu {
+  width: 280px;
 }
-
-.form-input {
-  width: 100%;
+.elements{
+  margin-left: 10px;
+  width: 280px;
 }
-
-.form-input-content {
-  height: 45%;
+.btns{
+  margin-top: 15px;
+}
+.item{
+  width: 280px !important;
+}
+.test{
+  margin-left: 10px !important;
+  width:280px;
 }

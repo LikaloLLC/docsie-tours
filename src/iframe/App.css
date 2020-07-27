@@ -1,0 +1,97 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.navbar {
+  border-bottom: 1px solid;
+}
+
+.title {
+  margin: 0 10px 0 10px;
+}
+
+.card-box {
+  height: 260px;
+  margin-top: 10px;
+  overflow-x: auto;
+  position: relative;
+}
+
+.card {
+  font-size: 75%;
+  width: 340px;
+  height: 220px;
+  margin-right: 15px;
+  border: 1px solid black;
+}
+
+.delete-button {
+  width: 20px;
+  height: 20px;
+}
+
+.card-list {
+  list-style-type: none;
+  margin: 0px;
+}
+
+.card-bar {
+  margin: 10px 10px 10px 10px;
+}
+
+.card-content {
+  margin: 0 10px 10px 10px;
+  height: 160px;
+}
+
+.card-form {
+  height: 160px;
+  width: 100%;
+}
+
+.card-form-input {
+  width: 100%;
+}
+
+.card-form-input-content {
+  height: 45%;
+}
+
+.icons {
+  cursor: pointer;
+}
