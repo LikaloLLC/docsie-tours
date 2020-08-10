@@ -11,7 +11,7 @@ const ShelfSelector = () => {
   const [shelfId, setShelfId] = useState(null);
   const [shelfName, setShelfName] = useState("Select shelf");
 
-  const port = chrome.runtime.connect("eokbffjgonmiogfjodfdbanbceahgogk", {
+  const port = chrome.runtime.connect(chrome.runtime.id, {
     name: "popup",
   });
 

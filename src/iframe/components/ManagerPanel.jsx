@@ -3,7 +3,7 @@ import Step from "./Step";
 import { StepContext } from "../context/StepState";
 import missingNumbers from "../utils/stepnumber";
 
-const extensionId = "eokbffjgonmiogfjodfdbanbceahgogk";
+const extensionId = chrome.runtime.id;
 
 /* global chrome */
 const ManagerPanel = () => {
