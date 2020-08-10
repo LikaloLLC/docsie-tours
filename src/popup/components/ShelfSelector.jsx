@@ -17,7 +17,6 @@ const ShelfSelector = () => {
 
   useEffect(() => {
     port.onMessage.addListener(async (msg) => {
-      console.log("MSG", msg);
       if (msg.token) {
         setToken(msg.token)
         await getUser(msg.token);

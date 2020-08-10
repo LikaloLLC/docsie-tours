@@ -31,6 +31,7 @@ const Step = ({ step, deleteButton }) => {
             className="bi bi-x-circle ml-auto"
             fill="currentColor"
             xmlns="http://www.w3.org/2000/svg"
+            cursor="pointer"
             onClick={() => deleteButton(step)}
           >
             <path

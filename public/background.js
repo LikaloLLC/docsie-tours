@@ -119,22 +119,25 @@ function getCookies(domain, name, callback) {
     }
   });
 }
-let tabId
+let tabId, bookId;
 chrome.runtime.onConnect.addListener(function (port) {
   if (port.name === "iframe") {
     getCookies(
       "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/",
       "csrftoken",
       (id) => {
-        console.log("test123id")
-        port.postMessage({ token: id });
+        console.log("test123id");
+        port.postMessage({ token: id, bookId });
       }
     );
+    console.log('back', bookId)
+    port.postMessage({ bookId}) 
 
     port.onMessage.addListener((data) => {
-      if(data.message === "minimize" || data.message === "maximize" ) port.postMessage({message: data.message})
-      if(data.message ==="cancel") {
-        chrome.tabs.sendMessage(tabId, {message: data.message})
+      if (data.message === "minimize" || data.message === "maximize")
+        port.postMessage({ message: data.message });
+      if (data.message === "cancel") {
+        chrome.tabs.sendMessage(tabId, { message: data.message });
       }
     });
   }
@@ -153,15 +156,30 @@ chrome.runtime.onConnect.addListener(function (port) {
       }
     );
     port.onMessage.addListener((data) => {
-      console.log(data);
-      chrome.tabs.create({
-        url: data.message,
-      }, (tab) => {
-        tabId=tab.id
-        chrome.tabs.executeScript(tab.id, {file: "/highlightElements.js"})
-        chrome.tabs.executeScript(tab.id, {file: "/insertScript.js"})
-      });
+      bookId = data.message
+      chrome.tabs.create(
+        {
+          url: data.message,
+        },
+        (tab) => {
+          tabId = tab.id;
+          chrome.tabs.executeScript(tab.id, { file: "/highlightElements.js" });
+          chrome.tabs.executeScript(tab.id, { file: "/insertScript.js" });
+        }
+      );
     });
   }
 });
-
+chrome.runtime.onMessageExternal.addListener((data, sender, sendResponse) => {
+  bookId = data.message;
+  chrome.tabs.create(
+    {
+      url: data.message,
+    },
+    (tab) => {
+      tabId = tab.id;
+      chrome.tabs.executeScript(tab.id, { file: "/highlightElements.js" });
+      chrome.tabs.executeScript(tab.id, { file: "/insertScript.js" });
+    }
+  );
+});

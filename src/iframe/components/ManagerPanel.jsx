@@ -12,11 +12,11 @@ const ManagerPanel = () => {
     addStep,
     deleteStep,
     getUser,
-    postSteps,
-    getBooks
+    saveTour,
+    setBook,
   } = useContext(StepContext);
 
-  const [title, setTitle] = useState("title 1");
+  const [title, setTitle] = useState("Tour");
   const [token, setToken] = useState("");
   const [status, setStatus] = useState("minimize");
   const [cancel, setCancel] = useState(false);
@@ -25,21 +25,26 @@ const ManagerPanel = () => {
 
   useEffect(() => {
     port.onMessage.addListener((msg) => {
-      console.log("TESY",msg)
-      if (msg.token) {        
+      if (msg.token) {      
+        console.log('object', msg)  
         setToken(msg.token);
         getUser(msg.token);
+      } else{
+        let uri = msg.bookId.split("/")
+        setBook(uri[uri.length-2])
       }
     });
+
 
     chrome.runtime.onMessage.addListener((msg) => {
       if (typeof msg.message === "object") {
         addStep({
           step: steps.length > 0 ? steps[steps.length - 1].step + 1 : 1,
-          title: "title123",
-          content: "test123",
+          title: "Step title",
+          content: "Step content",
           selector: msg.message,
         });
+      } else {
       }
     });
 
@@ -50,8 +55,8 @@ const ManagerPanel = () => {
 
   const step = {
     step: steps.length > 0 ? steps[steps.length - 1].step + 1 : 1,
-    title: "title123",
-    content: "test123",
+    title: "Step title",
+    content: "Step content",
     selector: null,
   };
 
@@ -80,9 +85,6 @@ const ManagerPanel = () => {
           role="group"
           aria-label="Basic example"
         >
-          <button onClick={() => { 
-            console.log(token)
-            getBooks(token)}}>test</button>
           <button
             className="btn btn-secondary"
             onClick={() => {
@@ -94,6 +96,9 @@ const ManagerPanel = () => {
           >
             {status}
           </button>
+          <button onClick={()=> {
+            console.log()
+          }}>test213</button>
           {cancel ? (
             <div class="btn-group" role="group" aria-label="Basic example">
               <button
@@ -119,7 +124,7 @@ const ManagerPanel = () => {
           )}
           <button
             className="btn btn-secondary"
-            onClick={() => postSteps(token)}
+            onClick={() => saveTour(token, title)}
           >
             save
           </button>

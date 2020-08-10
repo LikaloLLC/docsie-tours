@@ -2,12 +2,11 @@ import React, { createContext, useReducer } from "react";
 import axios from "axios";
 import StepReducer from "./StepReducer";
 
-let BlankArticle;
 const initialState = {
   steps: [],
   user: null,
-  books: null,
-  shelfs: null,
+  book: null,
+  shlef: null,
 };
 
 export const StepContext = createContext(initialState);
@@ -65,68 +64,47 @@ export const StepProvider = ({ children }) => {
     }
   }
 
-  /* async function getSteps(token) {
-    //headers
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": token,
-      },
-    };
-
+  async function setBook(bookId) {
     try {
-      const articles = await axios.get(
-        "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/lan_E52CfvbK6NFdklD6v/articles/",
-        config
+      dispatch({
+        type: "SET_BOOK",
+        payload: bookId,
+      });
+      const versions = await axios.get(
+        `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/book/${bookId}/versions/`
       );
-      console.log(articles);
-    } catch (err) {
-      console.log(err);
-    }
-  } */
 
-  /* async function saveBook(token, data) {
-    //headers
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": token,
-      },
-    };
-    const body = data;
-    try {
-      const res = await axios.post(
-        `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/doc_tMilaJbDpHHkDONkS/books/`,
-        body,
-        config
-      ); 
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
-  } */
-
-  async function getBooks(token) {
-    //headers
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": token,
-      },
-    };
-    try {
-      const books = await axios.get(
-        `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/doc_tMilaJbDpHHkDONkS/books/`,
-        config
-      );
-      console.log(books);
-      books.data[0].language.id;
+      versions.data.map(async (version) => {
+        if (version.active) {
+          const languages = await axios.get(
+            `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/version/${version.id}/languages/`
+          );
+          languages.data.map(async (language) => {
+            if (language.active) {
+              const articles = await axios.get(
+                `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${language.id}/articles/`
+              );
+              console.log(articles)
+              articles.data.map((article)=>{
+                article.description === state.book? console.log('MATCH'):console.log(article)
+              })
+              const res = await axios.get(
+                `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${language.id}/articles/`
+              );
+              dispatch({
+                type: "SET_SHELF",
+                payload: res.data[0].documentation
+              });
+            }
+          });
+        }
+      });
     } catch (err) {
       console.log(err);
     }
   }
 
-  async function postSteps(token) {
+  async function saveTour(token, title) {
     //headers
     const config = {
       headers: {
@@ -134,32 +112,74 @@ export const StepProvider = ({ children }) => {
         "X-CSRFToken": token,
       },
     };
-
+    const body = {
+      name: title,
+      description: "",
+      type: "tour",
+      primary: null,
+      locale: {},
+      published: false,
+      collection: [],
+      style: {},
+      url_path: "",
+      tags: [],
+      total_stars: 0,
+      version: "0.0.1",
+      language: "en",
+      meta: {},
+    };
     try {
-      console.log(state.steps);
-      state.steps.map(async (step) => {
-        BlankArticle = {
-          id: step.step,
-          doc: step,
-          tags: [],
-          name: "Untitled article",
-          description: null,
-          documentation: null,
-          order: 0,
-          version: null,
-          book: null,
-          slug: "untitled",
-          locked: false,
-        };
-        const articles = await axios.post(
-          "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/lan_LrSZJL4jzEzP6JEcm/articles/",
-          BlankArticle,
-          config,
-          { withCredentials: true }
-        );
+      const books = await axios.get(
+        `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/${state.shelf}/books/`,
+        body,
+        config
+      );
+      console.log(books)
+      const book = await axios.post(
+        `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/${state.shelf}/books/`,
+        body,
+        config
+      );
+      console.log(state.book)
 
-        console.log(articles);
-      });
+      let data = {
+        name: "testname",
+        description: state.book,
+        tags: [],
+        doc: {
+          v: 1,
+          meta: {
+            autorun: true,
+            linked: false,
+          },
+          steps: JSON.stringify(state.steps),
+        },
+        book: book.data.book.id,
+        documentation: "doc_tMilaJbDpHHkDONkS",
+        template: "tour",
+        revision: 0,
+        updators: [],
+        updated_by: null,
+        locked: false,
+      };
+      const articles = await axios.get(
+        `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${book.data.book.language.id}/articles/`,
+      );
+      articles.data.map(async (article)=>{
+        if(article.description===data.description){
+          await axios.put(
+            `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${book.data.book.language.id}/articles/`,
+            data,
+            config
+          );
+        } else{
+          await axios.post(
+            `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${book.data.book.language.id}/articles/`,
+            data,
+            config
+          );
+        }
+      })
     } catch (err) {
       console.log(err);
     }
@@ -170,14 +190,14 @@ export const StepProvider = ({ children }) => {
       value={{
         steps: state.steps,
         user: state.user,
+        book: state.book,
         addStep,
         deleteStep,
         editStep,
         getUser,
-        getBooks,
-        postSteps,
-      }}
-    >
+        saveTour,
+        setBook,
+      }}>
       {children}
     </StepContext.Provider>
   );
