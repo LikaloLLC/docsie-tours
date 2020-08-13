@@ -8,9 +8,7 @@
     "debugger",
     "activeTab",
     "cookies",
-    "http://*/",
-    "https://*/",
-    "*://*/*"
+    "<all_urls>"
   ],
   "background": {
     "scripts": ["background.js"],
@@ -29,9 +27,9 @@
     "*"
   ],
   "matches": [
-    "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/*"
+    "https://app.docsie.io/*"
   ],
   "accepts_tls_channel_id": false
 },
-  "content_security_policy": "script-src 'self' 'sha256-CMyYic0d7L0Q9AwjGU0n6buHFRR6bU3TOAe0P7DEJrk='; object-src 'self'; frame-src 'self'; default-src 'self';connect-src http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/"
+  "content_security_policy": "script-src 'self' 'sha256-CMyYic0d7L0Q9AwjGU0n6buHFRR6bU3TOAe0P7DEJrk='; object-src 'self'; frame-src 'self'; default-src 'self';connect-src http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/ https://app.docsie.io/app/"
 }

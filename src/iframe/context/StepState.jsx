@@ -6,7 +6,7 @@ const initialState = {
   steps: [],
   user: null,
   book: null,
-  shlef: null,
+  shelf: null,
 };
 
 export const StepContext = createContext(initialState);
@@ -42,6 +42,17 @@ export const StepProvider = ({ children }) => {
       state.steps[id].content = data.content;
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  async function setShelf(shelf){
+    try {
+      dispatch({
+        type:"SET_SHELF",
+        payload:shelf
+      })      
+    } catch (err) {
+      console.log(err)      
     }
   }
 
@@ -104,12 +115,29 @@ export const StepProvider = ({ children }) => {
     }
   }
 
+  async function getBooks(){
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      const books = await axios.get(
+        `https://app.docsie.io/app/documentation/doc_BGFUc59YU1zdGma5t/books/`,
+        config
+      );
+      console.log(books)
+    } catch (err) {
+      console.log(err)      
+    }
+  }
+
   async function saveTour(token, title) {
     //headers
     const config = {
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": token,
+        "X-CSRFToken": token
       },
     };
     const body = {
@@ -129,20 +157,20 @@ export const StepProvider = ({ children }) => {
       meta: {},
     };
     try {
-      const books = await axios.get(
+      /* const books = await axios.get(
         `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/${state.shelf}/books/`,
         body,
         config
       );
-      console.log(books)
+      console.log(books) */
       const book = await axios.post(
-        `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/${state.shelf}/books/`,
+        `https://app.docsie.io/app/documentation/doc_BGFUc59YU1zdGma5t/books/`,
         body,
         config
       );
       console.log(state.book)
 
-      let data = {
+      /* let data = {
         name: "testname",
         description: state.book,
         tags: [],
@@ -179,7 +207,7 @@ export const StepProvider = ({ children }) => {
             config
           );
         }
-      })
+      }) */
     } catch (err) {
       console.log(err);
     }
@@ -197,6 +225,8 @@ export const StepProvider = ({ children }) => {
         getUser,
         saveTour,
         setBook,
+        getBooks,
+        setShelf,
       }}>
       {children}
     </StepContext.Provider>

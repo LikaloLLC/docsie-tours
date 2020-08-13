@@ -3,47 +3,48 @@ import Step from "./Step";
 import { StepContext } from "../context/StepState";
 import missingNumbers from "../utils/stepnumber";
 
-const extensionId = "eokbffjgonmiogfjodfdbanbceahgogk";
-
 /* global chrome */
 const ManagerPanel = () => {
   const {
     steps,
     addStep,
     deleteStep,
-    getUser,
     saveTour,
-    setBook,
+    getBooks,
+    setShelf,
+    getUser,
   } = useContext(StepContext);
 
   const [title, setTitle] = useState("Tour");
   const [token, setToken] = useState("");
   const [status, setStatus] = useState("minimize");
   const [cancel, setCancel] = useState(false);
+  const [selector, setSelector] = useState()
 
-  const port = chrome.runtime.connect(extensionId, { name: "iframe" });
+  const port = chrome.runtime.connect(chrome.runtime.id, { name: "iframe" });
+
+  /* let bumbers = () => {
+    setNumber(number+1)
+    console.log("nnn",steps.length)
+    return steps.length > 0 ? steps[steps.length - 1].step + 1 : 1;
+  }; */
+
+  useEffect(()=>{
+    selector? addStep({...step, selector, step: steps.length > 0 ? steps[steps.length - 1].step + 1 : 1}): null
+  }, [selector])
 
   useEffect(() => {
     port.onMessage.addListener((msg) => {
-      if (msg.token) {      
-        console.log('object', msg)  
+      if (msg.token) {
+        console.log("32132132", msg, msg.shelfId);
         setToken(msg.token);
-        getUser(msg.token);
-      } else{
-        let uri = msg.bookId.split("/")
-        setBook(uri[uri.length-2])
+        setShelf(msg.shelfId);
       }
     });
 
-
     chrome.runtime.onMessage.addListener((msg) => {
-      if (typeof msg.message === "object") {
-        addStep({
-          step: steps.length > 0 ? steps[steps.length - 1].step + 1 : 1,
-          title: "Step title",
-          content: "Step content",
-          selector: msg.message,
-        });
+      if (typeof msg.message === "string") {        
+        setSelector(msg.message)
       } else {
       }
     });
@@ -65,7 +66,10 @@ const ManagerPanel = () => {
   };
 
   const cancelGuide = () => {
-    port.postMessage({ message: "cancel" });
+    chrome.tabs.getCurrent((id) => {
+      console.log("getCurrent", id);
+      port.postMessage({ message: "cancel", tabId: id.id });
+    });
   };
 
   return (
@@ -78,13 +82,11 @@ const ManagerPanel = () => {
           id="title"
           name="title"
           defaultValue={title}
-          onChange={(e) => setTitle(e.target.value)}
-        ></input>
+          onChange={(e) => setTitle(e.target.value)}></input>
         <div
           className="navbar-button btn-group ml-auto"
           role="group"
-          aria-label="Basic example"
-        >
+          aria-label="Basic example">
           <button
             className="btn btn-secondary"
             onClick={() => {
@@ -92,40 +94,38 @@ const ManagerPanel = () => {
               chrome.tabs.getCurrent((tab) => {
                 chrome.tabs.sendMessage(tab.id, { message: status });
               });
-            }}
-          >
+            }}>
             {status}
           </button>
-          <button onClick={()=> {
-            console.log()
-          }}>test213</button>
+          <button
+            onClick={() => {
+              getBooks();
+            }}>
+            test213
+          </button>
           {cancel ? (
             <div class="btn-group" role="group" aria-label="Basic example">
               <button
                 className="btn btn-secondary"
-                onClick={() => cancelGuide()}
-              >
+                onClick={() => cancelGuide()}>
                 I want to discard all unsaved changes
               </button>
               <button
                 className="btn btn-secondary"
-                onClick={() => setCancel(false)}
-              >
+                onClick={() => setCancel(false)}>
                 back
               </button>
             </div>
           ) : (
             <button
               className="btn btn-secondary"
-              onClick={() => setCancel(true)}
-            >
+              onClick={() => setCancel(true)}>
               cancel
             </button>
           )}
           <button
             className="btn btn-secondary"
-            onClick={() => saveTour(token, title)}
-          >
+            onClick={() => saveTour(token, title)}>
             save
           </button>
         </div>
@@ -138,8 +138,7 @@ const ManagerPanel = () => {
                   <Step
                     key={step.step}
                     step={step}
-                    deleteButton={deleteButton}
-                  ></Step>
+                    deleteButton={deleteButton}></Step>
                 );
               })
             : null}
@@ -155,8 +154,7 @@ const ManagerPanel = () => {
           onClick={() => {
             addStep(step);
             console.log(steps);
-          }}
-        >
+          }}>
           <path
             fill-rule="evenodd"
             d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"

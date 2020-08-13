@@ -49,6 +49,7 @@ export const UserProvider = ({ children }) => {
         `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/?workspace=${user.profile_details.workspace}`,
         config
       );
+      console.log(shelfs)
       dispatch({
         type: "GET_SHELFS",
         payload: shelfs,

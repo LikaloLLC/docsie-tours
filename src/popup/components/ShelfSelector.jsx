@@ -1,24 +1,23 @@
 import React, { useState, useContext, useEffect } from "react";
-import axios from "axios";
 import { UserContext } from "../context/UserState";
 
 /* global chrome */
 const ShelfSelector = () => {
   const { shelfs, bookUrl, getUser, getUrl } = useContext(UserContext);
 
-  const [token, setToken] = useState()
+  const [token, setToken] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [shelfId, setShelfId] = useState(null);
   const [shelfName, setShelfName] = useState("Select shelf");
 
-  const port = chrome.runtime.connect("eokbffjgonmiogfjodfdbanbceahgogk", {
+  const port = chrome.runtime.connect(chrome.runtime.id, {
     name: "popup",
   });
 
   useEffect(() => {
     port.onMessage.addListener(async (msg) => {
       if (msg.token) {
-        setToken(msg.token)
+        setToken(msg.token);
         await getUser(msg.token);
       }
     });
@@ -41,8 +40,7 @@ const ShelfSelector = () => {
           data-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
-          onClick={() => toggle()}
-        >
+          onClick={() => toggle()}>
           {shelfName}
         </button>
         <div className={menuClass} aria-labelledby="dropdownMenuLink">
@@ -54,11 +52,10 @@ const ShelfSelector = () => {
                     type="button"
                     key={shelf.id}
                     onClick={() => {
-                      getUrl(token, shelf.id);
                       setShelfName(shelf.name);
+                      setShelfId(shelf.id);
                       setIsOpen(false);
-                    }}
-                  >
+                    }}>
                     {shelf.name}
                   </button>
                 );
@@ -69,14 +66,14 @@ const ShelfSelector = () => {
       <a
         className="btn elements btns btn-secondary"
         onClick={() => {
-          bookUrl
-            ? port.postMessage({
-                message: bookUrl,
-              })
-            : null;
+          if (shelfId) {
+            port.postMessage({
+              message: shelfId,
+            });
+            window.close();
+          }
         }}
-        href="#"
-      >
+        href="#">
         Record a guide
       </a>
       <a className="btn elements btns btn-secondary" href="#">
@@ -84,8 +81,7 @@ const ShelfSelector = () => {
       </a>
       <a
         className="btn elements btns btn-secondary"
-        href="https://app.docsie.io/accounts/logout/"
-      >
+        href="https://app.docsie.io/accounts/logout/">
         Log out
       </a>
     </div>
