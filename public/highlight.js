@@ -1,6 +1,6 @@
 (function () {
   var _path;
-  var elements = document.querySelectorAll("button, form, input, a");
+  var elements = document.querySelectorAll("*");
 
 
   function getPseudo(sibIndex, sibLength) {
