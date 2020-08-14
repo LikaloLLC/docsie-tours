@@ -72,6 +72,10 @@ const ManagerPanel = () => {
     });
   };
 
+  const printTour = () => {
+    console.log(steps)
+  }
+
   return (
     <div id="main" className="d-flex flex-column">
       <div className="navbar d-flex align-items-center">
@@ -125,7 +129,7 @@ const ManagerPanel = () => {
           )}
           <button
             className="btn btn-secondary"
-            onClick={() => saveTour(token, title)}>
+            onClick={() => printTour()}>
             save
           </button>
         </div>

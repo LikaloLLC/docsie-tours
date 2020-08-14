@@ -141,20 +141,8 @@ export const StepProvider = ({ children }) => {
       },
     };
     const body = {
-      name: title,
-      description: "",
+      name: title,      
       type: "tour",
-      primary: null,
-      locale: {},
-      published: false,
-      collection: [],
-      style: {},
-      url_path: "",
-      tags: [],
-      total_stars: 0,
-      version: "0.0.1",
-      language: "en",
-      meta: {},
     };
     try {
       /* const books = await axios.get(
@@ -173,7 +161,6 @@ export const StepProvider = ({ children }) => {
       /* let data = {
         name: "testname",
         description: state.book,
-        tags: [],
         doc: {
           v: 1,
           meta: {
@@ -182,13 +169,7 @@ export const StepProvider = ({ children }) => {
           },
           steps: JSON.stringify(state.steps),
         },
-        book: book.data.book.id,
-        documentation: "doc_tMilaJbDpHHkDONkS",
         template: "tour",
-        revision: 0,
-        updators: [],
-        updated_by: null,
-        locked: false,
       };
       const articles = await axios.get(
         `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${book.data.book.language.id}/articles/`,
