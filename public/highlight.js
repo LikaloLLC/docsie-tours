@@ -2,7 +2,6 @@
   var _path;
   var elements = document.querySelectorAll("*");
 
-
   function getPseudo(sibIndex, sibLength) {
     if (sibLength < 2) return "";
     switch (true) {
@@ -54,10 +53,6 @@
     switch (true) {
       case Boolean(el.id):
         return "#" + el.id;
-      // case Boolean(el.getAttribute("class")):
-      //     var classPath = "." + el.getAttribute("class").split(" ").join(".");
-      //     document.querySelectorAll(classPath);
-      //     if (document.querySelectorAll(classPath).length === 1) return classPath;
       default:
         return getDomPath(el).join(">");
     }
@@ -71,12 +66,12 @@
     highlightedElements.forEach((el) => {
       el.remove();
     });
-    elements.forEach(element=>{
+    elements.forEach((element) => {
       let rect = element.getBoundingClientRect();
-      if(rect.top>=0 && rect.bottom <= window.innerHeight){
+      if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
         $overlay = document.createElement("div");
         $overlay.className = "HighlitedElement-docsie";
-        $overlay.style.pointerEvents = "none";        
+        $overlay.style.pointerEvents = "none";
         $overlay.style.border = "2px solid blue";
         $overlay.style.position = "fixed";
         $overlay.style.zIndex = "9999";
@@ -88,29 +83,14 @@
         document.body.appendChild($overlay);
         element.addEventListener("click", getElementPath);
       }
-    })
-    /* elements.forEach((element) => {
-      $overlay = document.createElement("div");
-      $overlay.className = "HighlitedElement-docsie";
-      $overlay.style.pointerEvents = "none";
-      $overlay.style.border = "2px solid blue";
-      $overlay.style.position = "absolute";
-      $overlay.style.zIndex = "9999";
-      let rect = element.getBoundingClientRect();
-      $overlay.style.top = rect.top + yOffset + "px";
-      $overlay.style.left = rect.left + xOffset + "px";
-      $overlay.style.width = rect.width + "px";
-      $overlay.style.height = rect.height + "px";
-      document.body.appendChild($overlay);
-      element.addEventListener("click", getElementPath);
-    }); */
+    });
   }
 
   function getElementPath(e) {
     e.preventDefault && e.preventDefault();
     e.stopPropagation && e.stopPropagation();
     _path = getElementFullPath(e.target);
-    chrome.runtime.sendMessage({ message: _path }); 
+    chrome.runtime.sendMessage({ message: _path });
   }
 
   function onElementClick(e) {
@@ -133,8 +113,6 @@
     highlightedElements.forEach((el) => {
       el.remove();
     });
-    highlightTarget(document.body);
-    document.removeEventListener("mousemove", onElementHover);
     document.removeEventListener("click", onElementClick);
     elements.forEach((element) => {
       element.removeEventListener("click", getElementPath);
@@ -145,6 +123,8 @@
   function init() {
     console.log("Content JS loaded");
     document.addEventListener("scroll", highlightElements);
+    showOverlay();
+    highlightElements();
     xOffset = window.pageXOffset;
     yOffset = window.pageYOffset;
   }
@@ -161,17 +141,11 @@
     }, 10);
   });
   init();
-  showOverlay();
-  highlightElements();
-  chrome.runtime.onMessage.addListener(function (
-    request,
-    sender,
-    sendResponse
-  ) {
-    switch (request.message) {
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    switch (message.message) {
       case "cancel":
+        console.log("message.message", message.message);
         hideOverlay();
-        break;
     }
     sendResponse();
   });

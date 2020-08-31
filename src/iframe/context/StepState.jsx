@@ -45,14 +45,14 @@ export const StepProvider = ({ children }) => {
     }
   }
 
-  async function setShelf(shelf){
+  async function setShelf(shelf) {
     try {
       dispatch({
-        type:"SET_SHELF",
-        payload:shelf
-      })      
+        type: "SET_SHELF",
+        payload: shelf,
+      });
     } catch (err) {
-      console.log(err)      
+      console.log(err);
     }
   }
 
@@ -95,16 +95,18 @@ export const StepProvider = ({ children }) => {
               const articles = await axios.get(
                 `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${language.id}/articles/`
               );
-              console.log(articles)
-              articles.data.map((article)=>{
-                article.description === state.book? console.log('MATCH'):console.log(article)
-              })
+              console.log(articles);
+              articles.data.map((article) => {
+                article.description === state.book
+                  ? console.log("MATCH")
+                  : console.log(article);
+              });
               const res = await axios.get(
                 `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${language.id}/articles/`
               );
               dispatch({
                 type: "SET_SHELF",
-                payload: res.data[0].documentation
+                payload: res.data[0].documentation,
               });
             }
           });
@@ -115,7 +117,7 @@ export const StepProvider = ({ children }) => {
     }
   }
 
-  async function getBooks(){
+  async function getBooks() {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -126,69 +128,72 @@ export const StepProvider = ({ children }) => {
         `https://app.docsie.io/app/documentation/doc_BGFUc59YU1zdGma5t/books/`,
         config
       );
-      console.log(books)
+      console.log(books);
     } catch (err) {
-      console.log(err)      
+      console.log(err);
     }
   }
 
-  async function saveTour(token, title) {
+  async function saveTour(token, title, url) {
     //headers
     const config = {
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": token
+        "X-CSRFToken": token,
       },
     };
     const body = {
-      name: title,      
+      name: title,
       type: "tour",
     };
+    const articleData = {
+      name: "tour",
+      description: url,
+      doc: {
+        v: 1,
+        blocks: [],
+        entityMap: {},
+        meta: {
+          autorun: true,
+          linked: false,
+        },
+        steps: JSON.stringify(state.steps),
+      },
+      tags: [],
+      template: "tour",
+    };
+    console.log(token);
     try {
-      /* const books = await axios.get(
+      const books = await axios.get(
         `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/${state.shelf}/books/`,
         body,
         config
       );
-      console.log(books) */
-      const book = await axios.post(
-        `https://app.docsie.io/app/documentation/doc_BGFUc59YU1zdGma5t/books/`,
-        body,
-        config
-      );
-      console.log(state.book)
-
-      /* let data = {
-        name: "testname",
-        description: state.book,
-        doc: {
-          v: 1,
-          meta: {
-            autorun: true,
-            linked: false,
-          },
-          steps: JSON.stringify(state.steps),
-        },
-        template: "tour",
-      };
-      const articles = await axios.get(
-        `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${book.data.book.language.id}/articles/`,
-      );
-      articles.data.map(async (article)=>{
-        if(article.description===data.description){
-          await axios.put(
-            `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${book.data.book.language.id}/articles/`,
-            data,
-            config
-          );
-        } else{
-          await axios.post(
-            `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${book.data.book.language.id}/articles/`,
-            data,
-            config
-          );
+      console.log(books);
+      let tourBook;
+      books.data.map(async (book) => {
+        if (book.type === "tour") {
+          tourBook = book;
         }
-      }) */
+      });
+      if (tourBook) {
+        axios.post(
+          `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${tourBook.data.book.language.id}/articles/`,
+          articleData,
+          config
+        );
+      } else {
+        const book = await axios.post(
+          `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/${state.shelf}/books/`,
+          body,
+          config
+        );
+        await axios.post(
+          `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${book.data.book.language.id}/articles/`,
+          articleData,
+          config
+        );
+      }
     } catch (err) {
       console.log(err);
     }

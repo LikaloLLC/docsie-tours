@@ -1,10 +1,6 @@
 var extensionOrigin = "chrome-extension://" + chrome.runtime.id;
 if (!location.ancestorOrigins.contains(extensionOrigin)) {
-  const port = chrome.runtime.connect(chrome.runtime.id, {
-    name: "insertScript",
-  });
-
-  var iframe = document.createElement("iframe");   
+  var iframe = document.createElement("iframe");
 
   iframe.style.cssText =
     "position:fixed;bottom:0;left:0;display:block;" +
@@ -15,15 +11,15 @@ if (!location.ancestorOrigins.contains(extensionOrigin)) {
 }
 
 chrome.runtime.onMessage.addListener((msg) => {
-  switch(msg.message){
+  switch (msg.message) {
     case "minimize":
-      iframe.style.height="5%"
-      break
+      iframe.style.height = "5%";
+      break;
     case "maximize":
     case "show_iframe":
-      iframe.style.height="32%"
-      break
+      iframe.style.height = "32%";
+      break;
     case "cancel":
-      iframe.remove()
+      iframe.remove();
   }
 });

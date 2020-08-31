@@ -17,17 +17,12 @@ const ManagerPanel = () => {
 
   const [title, setTitle] = useState("Tour");
   const [token, setToken] = useState("");
+  const [url, setUrl] = useState()
   const [status, setStatus] = useState("minimize");
   const [cancel, setCancel] = useState(false);
   const [selector, setSelector] = useState()
 
   const port = chrome.runtime.connect(chrome.runtime.id, { name: "iframe" });
-
-  /* let bumbers = () => {
-    setNumber(number+1)
-    console.log("nnn",steps.length)
-    return steps.length > 0 ? steps[steps.length - 1].step + 1 : 1;
-  }; */
 
   useEffect(()=>{
     selector? addStep({...step, selector, step: steps.length > 0 ? steps[steps.length - 1].step + 1 : 1}): null
@@ -38,6 +33,7 @@ const ManagerPanel = () => {
       if (msg.token) {
         console.log("32132132", msg, msg.shelfId);
         setToken(msg.token);
+        setUrl(msg.url)
         setShelf(msg.shelfId);
       }
     });
@@ -129,7 +125,7 @@ const ManagerPanel = () => {
           )}
           <button
             className="btn btn-secondary"
-            onClick={() => printTour()}>
+            onClick={() => saveTour(token, title, url)}>
             save
           </button>
         </div>
