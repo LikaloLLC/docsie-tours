@@ -1,7 +1,7 @@
 {
-  "name": "Getting Started Example",
+  "name": "Docsie for Chrome",
   "version": "1.0",
-  "description": "Build an Extension!",
+  "description": "Generate documents, build tours, and more.",
   "permissions": [
     "storage",
     "tabs",
@@ -9,29 +9,32 @@
     "activeTab",
     "cookies",
     "webNavigation",
-    "<all_urls>"
+    "http://*/*",
+    "https://*/*"
   ],
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "scripts": [
+      "background.js"
+    ]
   },
   "manifest_version": 2,
   "browser_action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_title": "Docsie.io"
   },
   "web_accessible_resources": [
     "index.html"
   ],
-  
-"externally_connectable": {
-  "ids": [
-    "*"
-  ],
-  "matches": [
-    "https://app.docsie.io/*",
-    "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/*"
-  ],
-  "accepts_tls_channel_id": false
-},
-  "content_security_policy": "script-src 'self' 'sha256-CMyYic0d7L0Q9AwjGU0n6buHFRR6bU3TOAe0P7DEJrk='; object-src 'self'; frame-src 'self'; default-src 'self';connect-src http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/ https://app.docsie.io/app/"
+  "externally_connectable": {
+    "ids": [
+      "*"
+    ],
+    "matches": [
+      "https://*.docsie.io/*",
+      "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/*",
+      "http://localhost:8003/*"
+    ],
+    "accepts_tls_channel_id": false
+  },
+  "content_security_policy": "script-src 'self' 'sha256-CMyYic0d7L0Q9AwjGU0n6buHFRR6bU3TOAe0P7DEJrk='; object-src 'self'; frame-src 'self'; default-src 'self';connect-src http://localhost:8003/ http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/ https://app.docsie.io/"
 }

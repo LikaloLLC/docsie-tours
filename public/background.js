@@ -1,3 +1,5 @@
+const domain = "http://localhost:8003";
+const csrfcookie = "csrftoken";
 function getCookies(domain, name, callback) {
   chrome.cookies.get({ url: domain, name }, function (cookie) {
     if (callback) {
@@ -5,12 +7,17 @@ function getCookies(domain, name, callback) {
     }
   });
 }
+function getCSRFCookie(then) {
+  getCookies(
+    domain,
+    csrfcookie,
+    then
+  );
+}
 let bookId, shelfId, tourOriginUrl;
 chrome.runtime.onConnect.addListener(function (port) {
   if (port.name === "iframe") {
-    getCookies(
-      "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/",
-      "csrftoken",
+    getCSRFCookie(
       (id) => {
         port.postMessage({ token: id, shelfId, url: tourOriginUrl });
       }
@@ -32,9 +39,7 @@ chrome.runtime.onConnect.addListener(function (port) {
     });
   }
   if (port.name === "popup") {
-    getCookies(
-      "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/",
-      "csrftoken",
+    getCSRFCookie(
       (id) => {
         port.postMessage({ token: id });
       }

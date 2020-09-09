@@ -1,11 +1,13 @@
 import React, { createContext, useReducer } from "react";
 import axios from "axios";
+import { URI } from "../../utils";
+import Config from "../../config.json";
 import UserReducer from "./UserReducer";
 
 const initialState = {
   user: null,
   shelfs: null,
-  bookUrl:null,
+  bookUrl: null,
 };
 
 export const UserContext = createContext(initialState);
@@ -22,7 +24,7 @@ export const UserProvider = ({ children }) => {
     };
     try {
       const user = await axios.get(
-        "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/rest-auth/user/",
+        new URI(Config.urls.auth.user),
         config
       );
       dispatch({
@@ -46,7 +48,7 @@ export const UserProvider = ({ children }) => {
 
     try {
       const shelfs = await axios.get(
-        `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/?workspace=${user.profile_details.workspace}`,
+        new URI(Config.urls.library.shelf, { workspaceId: user.profile_details.workspace }),
         config
       );
       console.log(shelfs)
@@ -58,18 +60,21 @@ export const UserProvider = ({ children }) => {
       console.log(err);
     }
   }
-  
-  async function getUrl(token, shelfId){
+
+  async function getUrl(token, shelfId) {
     //headers
     const config = {
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken":token,
+        "X-CSRFToken": token,
       },
     };
     try {
-      const books = await axios.get(`http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/${shelfId}/books/`, config)   
-      const url = `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/organization/docsie/#/book/${books.data[0].id}/`
+      const books = await axios.get(
+        new URI(Config.urls.library.books, { shelfId })
+        , config
+      );
+      const url = new URI(Config.urls.library.book, { bookId: books.data[0].id }).url
       dispatch({
         type: "GET_URL",
         payload: url,

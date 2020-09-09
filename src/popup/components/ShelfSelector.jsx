@@ -15,10 +15,10 @@ const ShelfSelector = () => {
   });
 
   useEffect(() => {
-    port.onMessage.addListener(async (msg) => {
+    port.onMessage.addListener((msg) => {
       if (msg.token) {
         setToken(msg.token);
-        await getUser(msg.token);
+        getUser(msg.token);
       }
     });
 
@@ -63,8 +63,7 @@ const ShelfSelector = () => {
             : null}
         </div>
       </div>
-      <a
-        className="btn elements btns btn-secondary"
+      <a className="btn elements btns btn-secondary"
         onClick={() => {
           if (shelfId) {
             port.postMessage({
@@ -73,10 +72,10 @@ const ShelfSelector = () => {
             window.close();
           }
         }}
-        href="#">
+        href="#void">
         Record a guide
       </a>
-      <a className="btn elements btns btn-secondary" href="#">
+      <a className="btn elements btns btn-secondary" href="#void">
         Create a guided tour
       </a>
       <a

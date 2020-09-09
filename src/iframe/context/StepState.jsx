@@ -1,6 +1,8 @@
 import React, { createContext, useReducer } from "react";
 import axios from "axios";
 import StepReducer from "./StepReducer";
+import { URI } from "../../utils";
+import Config from "../../config.json";
 
 const initialState = {
   steps: [],
@@ -65,7 +67,7 @@ export const StepProvider = ({ children }) => {
     };
     try {
       const user = await axios.get(
-        "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/rest-auth/user/",
+        new URI(Config.urls.auth.user),
         config
       );
       state.user = user.data;

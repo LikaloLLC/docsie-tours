@@ -1,0 +1,29 @@
+{
+  "urls": {
+    "base": "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/",
+    "auth": {
+      "user": "/rest-auth/user/"
+    },
+    "workspace": {
+    },
+    "library": {
+        "all": "/documentation/?workspace=:workspaceId"
+    },
+    "book": {
+        "all": "/documentation/:shelfId/books/",
+        "details": "/book/:bookId/"
+    },
+    "version": {
+        "all": "/book/:bookId/versions/",
+        "details": "/version/:versionId/"
+    },
+    "language": {
+        "all": "/version/:versionId/languages/",
+        "details": "/language/:languageId/"
+    },
+    "article": {
+        "all": "/language/:languageId/articles/",
+        "details": "/article/:articleId/"
+    }
+  }
+}
