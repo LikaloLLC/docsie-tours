@@ -14,15 +14,15 @@
         "details": "/book/:bookId/"
     },
     "version": {
-        "all": "/book/:bookId/versions/",
+        "all": "/app/book/:bookId/versions/",
         "details": "/version/:versionId/"
     },
     "language": {
-        "all": "/version/:versionId/languages/",
+        "all": "/app/version/:versionId/languages/",
         "details": "/language/:languageId/"
     },
     "article": {
-        "all": "/language/:languageId/articles/",
+        "all": "/app/language/:languageId/articles/",
         "details": "/article/:articleId/"
     }
   }

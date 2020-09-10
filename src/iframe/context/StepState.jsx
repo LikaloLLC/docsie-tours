@@ -77,15 +77,16 @@ export const StepProvider = ({ children }) => {
     }
   }
 
-  async function setBook(bookId) {
+  /* async function setBook(bookId) {
     try {
       dispatch({
         type: "SET_BOOK",
         payload: bookId,
-      });
+      }); 
       const versions = await axios.get(
-        `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/book/${bookId}/versions/`
+        new URI(Config.urls.version.all, { bookId }),
       );
+      console.log("VERSIONS", versions)
 
       versions.data.map(async (version) => {
         if (version.active) {
@@ -117,7 +118,7 @@ export const StepProvider = ({ children }) => {
     } catch (err) {
       console.log(err);
     }
-  }
+  } */
 
   async function saveTour(token, title, url) {
     //headers
@@ -150,7 +151,7 @@ export const StepProvider = ({ children }) => {
     console.log(token);
     try {
       const books = await axios.get(
-        `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/${state.shelf}/books/`,
+        new URI(Config.urls.book.all, { shelfId: state.shelf }),
         body,
         config
       );
@@ -164,18 +165,18 @@ export const StepProvider = ({ children }) => {
       });
       if (tourBook) {
         axios.post(
-          `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${tourBook.language.id}/articles/`,
+          new URI(Config.urls.article.all, { languageId: tourBook.language.id }),
           articleData,
           config
         );
       } else {
         const book = await axios.post(
-          `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/documentation/${state.shelf}/books/`,
+          new URI(Config.urls.book.all, { shelfId: state.shelf }),//lan_5CugfAlCIlunJwcqY
           body,
           config
         );
         await axios.post(
-          `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${book.data.book.language.id}/articles/`,
+          new URI(Config.urls.article.all, { languageId: book.data.book.language.id }),
           articleData,
           config
         );
@@ -196,8 +197,7 @@ export const StepProvider = ({ children }) => {
         editStep,
         getUser,
         saveTour,
-        setBook,
-        getBooks,
+        //setBook,
         setShelf,
       }}>
       {children}
