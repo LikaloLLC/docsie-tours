@@ -48,10 +48,9 @@ export const UserProvider = ({ children }) => {
 
     try {
       const shelfs = await axios.get(
-        new URI(Config.urls.library.shelf, { workspaceId: user.profile_details.workspace }),
+        new URI(Config.urls.library.all, { workspaceId: user.profile_details.workspace }),
         config
       );
-      console.log(shelfs)
       dispatch({
         type: "GET_SHELFS",
         payload: shelfs,

@@ -1,4 +1,4 @@
-const domain = "http://localhost:8003";
+const domain = "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/";
 const csrfcookie = "csrftoken";
 function getCookies(domain, name, callback) {
   chrome.cookies.get({ url: domain, name }, function (cookie) {

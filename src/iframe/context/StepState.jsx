@@ -119,23 +119,6 @@ export const StepProvider = ({ children }) => {
     }
   }
 
-  async function getBooks() {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    try {
-      const books = await axios.get(
-        `https://app.docsie.io/app/documentation/doc_BGFUc59YU1zdGma5t/books/`,
-        config
-      );
-      console.log(books);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   async function saveTour(token, title, url) {
     //headers
     const config = {
@@ -176,11 +159,12 @@ export const StepProvider = ({ children }) => {
       books.data.map(async (book) => {
         if (book.type === "tour") {
           tourBook = book;
+          console.log(tourBook)
         }
       });
       if (tourBook) {
         axios.post(
-          `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${tourBook.data.book.language.id}/articles/`,
+          `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${tourBook.language.id}/articles/`,
           articleData,
           config
         );

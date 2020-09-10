@@ -7,10 +7,10 @@
     "workspace": {
     },
     "library": {
-        "all": "/documentation/?workspace=:workspaceId"
+        "all": "/app/documentation/?workspace=:workspaceId"
     },
     "book": {
-        "all": "/documentation/:shelfId/books/",
+        "all": "/app/documentation/:shelfId/books/",
         "details": "/book/:bookId/"
     },
     "version": {

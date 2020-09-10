@@ -3,9 +3,8 @@ import { UserContext } from "../context/UserState";
 
 /* global chrome */
 const ShelfSelector = () => {
-  const { shelfs, bookUrl, getUser, getUrl } = useContext(UserContext);
+  const { shelfs, getUser } = useContext(UserContext);
 
-  const [token, setToken] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [shelfId, setShelfId] = useState(null);
   const [shelfName, setShelfName] = useState("Select shelf");
@@ -17,7 +16,6 @@ const ShelfSelector = () => {
   useEffect(() => {
     port.onMessage.addListener((msg) => {
       if (msg.token) {
-        setToken(msg.token);
         getUser(msg.token);
       }
     });

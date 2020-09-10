@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import Step from "./Step";
 import { StepContext } from "../context/StepState";
-import missingNumbers from "../utils/stepnumber";
 
 /* global chrome */
 const ManagerPanel = () => {
@@ -10,9 +9,7 @@ const ManagerPanel = () => {
     addStep,
     deleteStep,
     saveTour,
-    getBooks,
     setShelf,
-    getUser,
   } = useContext(StepContext);
 
   const [title, setTitle] = useState("Tour");
@@ -96,12 +93,6 @@ const ManagerPanel = () => {
               });
             }}>
             {status}
-          </button>
-          <button
-            onClick={() => {
-              getBooks();
-            }}>
-            test213
           </button>
           {cancel ? (
             <div class="btn-group" role="group" aria-label="Basic example">
