@@ -4,8 +4,9 @@ if (!location.ancestorOrigins.contains(extensionOrigin)) {
 
   iframe.style.cssText =
     "position:fixed;bottom:0;left:0;display:block;" +
-    "width:100%;height:32%;border-top:1px solid;z-index:10000;overflow-y:hidden;";
+    "width:100%;height:32%;border-top:1px solid;z-index:10000;overflow:hidden;";
   document.body.appendChild(iframe);
+  console.log(iframe.children)
 
   iframe.src = `${chrome.runtime.getURL("/index.html")}`;
 }

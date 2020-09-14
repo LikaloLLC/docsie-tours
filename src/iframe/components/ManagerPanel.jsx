@@ -14,6 +14,7 @@ const ManagerPanel = () => {
   const [status, setStatus] = useState("Minimize");
   const [cancel, setCancel] = useState(false);
   const [selector, setSelector] = useState();
+  const [count, setcount] = useState(0)
 
   const port = chrome.runtime.connect(chrome.runtime.id, { name: "iframe" });
 
@@ -57,7 +58,9 @@ const ManagerPanel = () => {
   };
 
   const deleteButton = (step) => {
+    console.log(steps.indexOf(step))
     deleteStep(steps.indexOf(step));
+    setcount(count+1)
   };
 
   const cancelGuide = () => {
@@ -121,7 +124,7 @@ const ManagerPanel = () => {
             ? steps.map((step) => {
                 return (
                   <Step
-                    key={step.step}
+                    key={Math.random()*10000}
                     step={step}
                     deleteButton={deleteButton}></Step>
                 );
