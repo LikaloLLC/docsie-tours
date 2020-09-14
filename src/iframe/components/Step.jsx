@@ -20,56 +20,68 @@ const Step = ({ step, deleteButton }) => {
     editStep(id, Serialize(e.target));
   };
   return (
-    <li>
-      <div className="card">
-        <div className="card-bar d-flex flex-row align-items-center">
+    <div className="card step">
+      <form
+        className="card-form"
+        onSubmit={(e) => onSubmit(e, steps.indexOf(step))}>
+        <div className="card-header d-flex">
           <div>{`Step ${step.step}`}</div>
-          <svg
-            width="1.5em"
-            height="1.5em"
-            viewBox="0 0 16 16"
-            className="bi bi-x-circle ml-auto"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-            cursor="pointer"
-            onClick={() => deleteButton(step)}
-          >
-            <path
-              fill-rule="evenodd"
-              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
-            />
-            <path
-              fill-rule="evenodd"
-              d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"
-            />
-            <path
-              fill-rule="evenodd"
-              d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"
-            />
-          </svg>
+          <div class="ml-auto">
+            <button class="btn btn-icon mr-2">
+              <svg class="icon-save" width="20" height="20" viewBox="0 0 20 20">
+                <path
+                  d="M1.5 1.5H16L18.5 4v14.5h-17z"
+                  fill="none"
+                  stroke="currentColor"
+                />
+                <path
+                  d="M4.5 18.5v-8h11v8M14.5 2v5.5h-9V2M12 3v3M7 13h6M7 15h4"
+                  fill="none"
+                  stroke="currentColor"
+                />
+              </svg>
+            </button>
+            <button class="btn btn-secondary btn-icon" type="button" onClick={() => deleteButton(step.step)}>
+              <svg
+                class="icon-trash"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20">
+                <path
+                  d="M6.5 3V1.5h7V3M4.5 4v14.5h11V4"
+                  fill="none"
+                  stroke="currentColor"
+                />
+                <path
+                  fill="currentColor"
+                  d="M8 7h1v9H8zM11 7h1v9h-1zM2 3h16v1H2z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-        <div className="card-content">
-          <form
-            className="card-form"
-            onSubmit={(e) => onSubmit(e, steps.indexOf(step))}
-          >
-            <label htmlFor="title">Step title</label>
+        <div className="card-body">
+          <div className="form-group">
+            <label htmlFor="title" className="sr-only">
+              Step title
+            </label>
             <input
               name="title"
               defaultValue={step.title}
-              className="card-form-input"
-            ></input>
-            <label htmlFor="conent">Step content</label>
+              className="form-control"></input>
+          </div>
+          <div className="form-group">
+            <label htmlFor="conent" className="sr-only">
+              Step content
+            </label>
             <textarea
               name="content"
               defaultValue={step.content}
-              className="card-form-input card-form-input-content"
-            ></textarea>
-            <button>Submit card changes</button>
-          </form>
+              className="form-control"></textarea>
+          </div>
         </div>
-      </div>
-    </li>
+      </form>
+    </div>
   );
 };
 

@@ -8,11 +8,9 @@ export default (state, action) => {
         steps: [..._steps],
       };
     case "DELETE_STEP":
-      state.steps.splice(action.payload, 1)
-      console.log(state.steps)
       return {
         ...state,
-        steps: [...state.steps]
+        steps: [...action.payload]
       };
     case "SET_SHELF":
       return {

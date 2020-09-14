@@ -4,40 +4,42 @@ import { StepContext } from "../context/StepState";
 
 /* global chrome */
 const ManagerPanel = () => {
-  const {
-    steps,
-    addStep,
-    deleteStep,
-    saveTour,
-    setShelf,
-  } = useContext(StepContext);
+  const { steps, addStep, deleteStep, saveTour, setShelf } = useContext(
+    StepContext
+  );
 
   const [title, setTitle] = useState("Tour");
   const [token, setToken] = useState("");
-  const [url, setUrl] = useState()
-  const [status, setStatus] = useState("minimize");
+  const [url, setUrl] = useState();
+  const [status, setStatus] = useState("Minimize");
   const [cancel, setCancel] = useState(false);
-  const [selector, setSelector] = useState()
+  const [selector, setSelector] = useState();
 
   const port = chrome.runtime.connect(chrome.runtime.id, { name: "iframe" });
 
-  useEffect(()=>{
-    selector? addStep({...step, selector, step: steps.length > 0 ? steps[steps.length - 1].step + 1 : 1}): null
-  }, [selector])
+  useEffect(() => {
+    selector
+      ? addStep({
+          ...step,
+          selector,
+          step: steps.length > 0 ? steps[steps.length - 1].step + 1 : 1,
+        })
+      : null;
+  }, [selector]);
 
   useEffect(() => {
     port.onMessage.addListener((msg) => {
       if (msg.token) {
         console.log("32132132", msg, msg.shelfId);
         setToken(msg.token);
-        setUrl(msg.url)
+        setUrl(msg.url);
         setShelf(msg.shelfId);
       }
     });
 
     chrome.runtime.onMessage.addListener((msg) => {
-      if (typeof msg.message === "string") {        
-        setSelector(msg.message)
+      if (typeof msg.message === "string") {
+        setSelector(msg.message);
       } else {
       }
     });
@@ -65,29 +67,25 @@ const ManagerPanel = () => {
     });
   };
 
-  const printTour = () => {
-    console.log(steps)
-  }
-
   return (
     <div id="main" className="d-flex flex-column">
-      <div className="navbar d-flex align-items-center">
-        <label htmlFor="title" className="title">
-          Title:
-        </label>
-        <input
-          id="title"
-          name="title"
-          defaultValue={title}
-          onChange={(e) => setTitle(e.target.value)}></input>
-        <div
-          className="navbar-button btn-group ml-auto"
-          role="group"
-          aria-label="Basic example">
+      <div className="navbar navbar-light border-bottom d-flex align-items-center test">
+        <form className="form-inline my-2 my-lg-0">
+          <label htmlFor="title" className="col-form-label mr-2">
+            Title:
+          </label>
+          <input
+            id="title"
+            name="title"
+            className="form-control"
+            defaultValue={title}
+            onChange={(e) => setTitle(e.target.value)}></input>
+        </form>
+        <div className=" btn-group ml-auto" role="group">
           <button
-            className="btn btn-secondary"
+            className="btn btn-default"
             onClick={() => {
-              setStatus(status === "minimize" ? "maximize" : "minimize");
+              setStatus(status === "Minimize" ? "Maximize" : "Minimize");
               chrome.tabs.getCurrent((tab) => {
                 chrome.tabs.sendMessage(tab.id, { message: status });
               });
@@ -95,34 +93,30 @@ const ManagerPanel = () => {
             {status}
           </button>
           {cancel ? (
-            <div class="btn-group" role="group" aria-label="Basic example">
-              <button
-                className="btn btn-secondary"
-                onClick={() => cancelGuide()}>
+            <div class="btn-group" role="group">
+              <button className="btn btn-default" onClick={() => cancelGuide()}>
                 I want to discard all unsaved changes
               </button>
               <button
-                className="btn btn-secondary"
+                className="btn btn-default"
                 onClick={() => setCancel(false)}>
-                back
+                Back
               </button>
             </div>
           ) : (
-            <button
-              className="btn btn-secondary"
-              onClick={() => setCancel(true)}>
-              cancel
+            <button className="btn btn-default" onClick={() => setCancel(true)}>
+              Cancel
             </button>
           )}
           <button
-            className="btn btn-secondary"
+            className="btn btn-primary"
             onClick={() => saveTour(token, title, url)}>
-            save
+            Save
           </button>
         </div>
       </div>
-      <div className="d-flex flex-row align-items-center card-box">
-        <ul className="card-list d-flex flex-row align-items-center">
+      <div className="step-container container-fluid border-bottom">
+        <div className="card-deck d-flex flex-row flex-nowrap">
           {Array.isArray(steps)
             ? steps.map((step) => {
                 return (
@@ -133,32 +127,21 @@ const ManagerPanel = () => {
                 );
               })
             : null}
-        </ul>
-
-        <svg
-          width="1.5em"
-          height="1.5em"
-          viewBox="0 0 16 16"
-          className="bi bi-plus-circle icons"
-          fill="currentColor"
-          xmlns="http://www.w3.org/2000/svg"
-          onClick={() => {
-            addStep(step);
-            console.log(steps);
-          }}>
-          <path
-            fill-rule="evenodd"
-            d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"
-          />
-          <path
-            fill-rule="evenodd"
-            d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"
-          />
-          <path
-            fill-rule="evenodd"
-            d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
-          />
-        </svg>
+          <div className="card step">
+            <button class="btn btn-icon h-100" onClick={() => addStep(step)}>
+              <svg
+                class="icon-plus-circle"
+                width="48"
+                height="48"
+                viewBox="0 0 20 20">
+                <g fill="none" stroke="currentColor">
+                  <path d="M9 1h1v17H9z" />
+                  <path d="M1 9h17v1H1z" />
+                </g>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

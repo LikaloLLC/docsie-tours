@@ -12,10 +12,10 @@ if (!location.ancestorOrigins.contains(extensionOrigin)) {
 
 chrome.runtime.onMessage.addListener((msg) => {
   switch (msg.message) {
-    case "minimize":
+    case "Minimize":
       iframe.style.height = "5%";
       break;
-    case "maximize":
+    case "Maximize":
     case "show_iframe":
       iframe.style.height = "32%";
       break;

@@ -25,7 +25,7 @@ chrome.runtime.onConnect.addListener(function (port) {
     port.postMessage({ bookId });
 
     port.onMessage.addListener((data) => {
-      if (data.message === "minimize" || data.message === "maximize")
+      if (data.message === "Minimize" || data.message === "Maximize")
         port.postMessage({ message: data.message });
       if (data.message === "cancel") {
         chrome.tabs.sendMessage(data.tabId, { message: data.message });

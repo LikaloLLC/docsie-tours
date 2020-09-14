@@ -28,10 +28,17 @@ export const StepProvider = ({ children }) => {
   }
 
   async function deleteStep(id) {
+    console.log(id)
+    let _steps = state.steps
+    _steps.splice(id, 1)
+    //change order
+    _steps.map((el) => {
+      el.step=_steps.indexOf(el)+1
+    })
     try {
       dispatch({
         type: "DELETE_STEP",
-        payload: id,
+        payload: _steps,
       });
     } catch (err) {
       console.log(err);
@@ -42,6 +49,7 @@ export const StepProvider = ({ children }) => {
     try {
       state.steps[id].title = data.title;
       state.steps[id].content = data.content;
+      console.log(state.steps[id])
     } catch (err) {
       console.log(err);
     }
