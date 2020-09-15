@@ -28,13 +28,15 @@ export const StepProvider = ({ children }) => {
   }
 
   async function deleteStep(id) {
-    console.log(id)
-    let _steps = state.steps
-    _steps.splice(id, 1)
+    let _steps = state.steps;
+    let a = _steps.splice(id, 1);
+    state.steps = [..._steps]
+    console.log(id, _steps, a);
+
     //change order
     _steps.map((el) => {
-      el.step=_steps.indexOf(el)+1
-    })
+      el.step = _steps.indexOf(el) + 1;
+    });
     try {
       dispatch({
         type: "DELETE_STEP",
@@ -49,7 +51,7 @@ export const StepProvider = ({ children }) => {
     try {
       state.steps[id].title = data.title;
       state.steps[id].content = data.content;
-      console.log(state.steps[id])
+      console.log(state.steps[id]);
     } catch (err) {
       console.log(err);
     }
@@ -74,10 +76,7 @@ export const StepProvider = ({ children }) => {
       },
     };
     try {
-      const user = await axios.get(
-        new URI(Config.urls.auth.user),
-        config
-      );
+      const user = await axios.get(new URI(Config.urls.auth.user), config);
       state.user = user.data;
       console.log(user, state.user);
     } catch (err) {
@@ -168,23 +167,27 @@ export const StepProvider = ({ children }) => {
       books.data.map(async (book) => {
         if (book.type === "tour") {
           tourBook = book;
-          console.log(tourBook)
+          console.log(tourBook);
         }
       });
       if (tourBook) {
         axios.post(
-          new URI(Config.urls.article.all, { languageId: tourBook.language.id }),
+          new URI(Config.urls.article.all, {
+            languageId: tourBook.language.id,
+          }),
           articleData,
           config
         );
       } else {
         const book = await axios.post(
-          new URI(Config.urls.book.all, { shelfId: state.shelf }),//lan_5CugfAlCIlunJwcqY
+          new URI(Config.urls.book.all, { shelfId: state.shelf }), //lan_5CugfAlCIlunJwcqY
           body,
           config
         );
         await axios.post(
-          new URI(Config.urls.article.all, { languageId: book.data.book.language.id }),
+          new URI(Config.urls.article.all, {
+            languageId: book.data.book.language.id,
+          }),
           articleData,
           config
         );

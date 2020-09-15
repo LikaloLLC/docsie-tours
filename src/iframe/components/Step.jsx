@@ -41,7 +41,7 @@ const Step = ({ step, deleteButton }) => {
                 />
               </svg>
             </button>
-            <button class="btn btn-secondary btn-icon" type="button" onClick={() => deleteButton(step.step)}>
+            <button class="btn btn-secondary btn-icon" type="button" onClick={() => deleteButton(step)}>
               <svg
                 class="icon-trash"
                 width="20"
