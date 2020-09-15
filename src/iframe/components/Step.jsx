@@ -25,7 +25,7 @@ const Step = ({ step, deleteButton }) => {
         className="card-form"
         onSubmit={(e) => onSubmit(e, steps.indexOf(step))}>
         <div className="card-header d-flex">
-          <div>{`Step ${step.step}`}</div>
+          <div>Step {step.step}</div>
           <div class="ml-auto">
             <button class="btn btn-icon mr-2">
               <svg class="icon-save" width="20" height="20" viewBox="0 0 20 20">
@@ -60,7 +60,7 @@ const Step = ({ step, deleteButton }) => {
             </button>
           </div>
         </div>
-        <div className="card-body">
+        <div className="card-body pb-0">
           <div className="form-group">
             <label htmlFor="title" className="sr-only">
               Step title
@@ -79,6 +79,7 @@ const Step = ({ step, deleteButton }) => {
               defaultValue={step.content}
               className="form-control"></textarea>
           </div>
+          <small className="d-inline-block text-truncate" style={{ maxWidth: "230px" }}>{step.selector || "[no selector]"}</small>
         </div>
       </form>
     </div>
