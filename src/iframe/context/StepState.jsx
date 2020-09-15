@@ -16,7 +16,7 @@ export const StepContext = createContext(initialState);
 export const StepProvider = ({ children }) => {
   const [state, dispatch] = useReducer(StepReducer, initialState);
 
-  async function addStep(step) {
+  function addStep(step) {
     try {
       dispatch({
         type: "ADD_STEP",
@@ -27,10 +27,10 @@ export const StepProvider = ({ children }) => {
     }
   }
 
-  async function deleteStep(id) {
+  function deleteStep(id) {
     let _steps = state.steps;
     let a = _steps.splice(id, 1);
-    state.steps = [..._steps]
+    state.steps = [..._steps];
     console.log(id, _steps, a);
 
     //change order
@@ -47,17 +47,25 @@ export const StepProvider = ({ children }) => {
     }
   }
 
-  async function editStep(id, data) {
+  function editStep(id, data, type) {
     try {
-      state.steps[id].title = data.title;
-      state.steps[id].content = data.content;
-      console.log(state.steps[id]);
+      switch (type) {
+        case "title":
+          state.steps[id].title = data;
+          break;
+        case "content":
+          state.steps[id].content = data;
+          break;
+        case "selector":
+          state.steps[id].selector = data;
+          break;
+      }
     } catch (err) {
       console.log(err);
     }
   }
 
-  async function setShelf(shelf) {
+  function setShelf(shelf) {
     try {
       dispatch({
         type: "SET_SHELF",
@@ -83,49 +91,6 @@ export const StepProvider = ({ children }) => {
       console.log(err);
     }
   }
-
-  /* async function setBook(bookId) {
-    try {
-      dispatch({
-        type: "SET_BOOK",
-        payload: bookId,
-      }); 
-      const versions = await axios.get(
-        new URI(Config.urls.version.all, { bookId }),
-      );
-      console.log("VERSIONS", versions)
-
-      versions.data.map(async (version) => {
-        if (version.active) {
-          const languages = await axios.get(
-            `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/version/${version.id}/languages/`
-          );
-          languages.data.map(async (language) => {
-            if (language.active) {
-              const articles = await axios.get(
-                `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${language.id}/articles/`
-              );
-              console.log(articles);
-              articles.data.map((article) => {
-                article.description === state.book
-                  ? console.log("MATCH")
-                  : console.log(article);
-              });
-              const res = await axios.get(
-                `http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/app/language/${language.id}/articles/`
-              );
-              dispatch({
-                type: "SET_SHELF",
-                payload: res.data[0].documentation,
-              });
-            }
-          });
-        }
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  } */
 
   async function saveTour(token, title, url) {
     //headers
@@ -208,7 +173,6 @@ export const StepProvider = ({ children }) => {
         editStep,
         getUser,
         saveTour,
-        //setBook,
         setShelf,
       }}>
       {children}

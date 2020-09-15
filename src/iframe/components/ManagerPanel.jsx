@@ -4,34 +4,36 @@ import { StepContext } from "../context/StepState";
 
 /* global chrome */
 const ManagerPanel = () => {
-  const { steps, addStep, deleteStep, saveTour, setShelf } = useContext(
-    StepContext
-  );
+  const {
+    steps,
+    addStep,
+    deleteStep,
+    saveTour,
+    setShelf,
+    editStep
+  } = useContext(StepContext);
 
   const [title, setTitle] = useState("Tour");
   const [token, setToken] = useState("");
   const [url, setUrl] = useState();
   const [status, setStatus] = useState("Minimize");
   const [cancel, setCancel] = useState(false);
-  const [selector, setSelector] = useState();
-  const [count, setcount] = useState(0)
+  const [stepId, setStepId] = useState();
+  const [selector, setSelector] = useState(null);
 
   const port = chrome.runtime.connect(chrome.runtime.id, { name: "iframe" });
 
   useEffect(() => {
-    selector
-      ? addStep({
-          ...step,
-          selector,
-          step: steps.length > 0 ? steps[steps.length - 1].step + 1 : 1,
-        })
-      : null;
+    if (selector) {
+      editStep(stepId, selector, "selector")
+      changeStatus();
+      setSelector(null)
+    }
   }, [selector]);
 
   useEffect(() => {
     port.onMessage.addListener((msg) => {
       if (msg.token) {
-        console.log("32132132", msg, msg.shelfId);
         setToken(msg.token);
         setUrl(msg.url);
         setShelf(msg.shelfId);
@@ -41,7 +43,6 @@ const ManagerPanel = () => {
     chrome.runtime.onMessage.addListener((msg) => {
       if (typeof msg.message === "string") {
         setSelector(msg.message);
-      } else {
       }
     });
 
@@ -52,21 +53,35 @@ const ManagerPanel = () => {
 
   const step = {
     step: steps.length > 0 ? steps[steps.length - 1].step + 1 : 1,
-    title: "Step title",
-    content: "Step content",
+    title: null,
+    content: null,
     selector: null,
   };
 
+  const selectorRequest = (stepId) => {
+    setStepId(stepId);
+    typeof stepId === "number"
+      ? chrome.tabs.getCurrent((tab) => {
+          chrome.tabs.sendMessage(tab.id, { message: "selector request" });
+          changeStatus();
+        })
+      : null;
+  };
+
   const deleteButton = (step) => {
-    console.log(steps.indexOf(step))
     deleteStep(steps.indexOf(step));
-    setcount(count+1)
+  };
+
+  const changeStatus = () => {
+    setStatus(status === "Minimize" ? "Maximize" : "Minimize");
+    chrome.tabs.getCurrent((tab) => {
+      chrome.tabs.sendMessage(tab.id, { message: status });
+    });
   };
 
   const cancelGuide = () => {
-    chrome.tabs.getCurrent((id) => {
-      console.log("getCurrent", id);
-      port.postMessage({ message: "cancel", tabId: id.id });
+    chrome.tabs.getCurrent((tab) => {
+      port.postMessage({ message: "cancel", tabId: tab.id });
     });
   };
 
@@ -85,14 +100,7 @@ const ManagerPanel = () => {
             onChange={(e) => setTitle(e.target.value)}></input>
         </form>
         <div className=" btn-group ml-auto" role="group">
-          <button
-            className="btn btn-default"
-            onClick={() => {
-              setStatus(status === "Minimize" ? "Maximize" : "Minimize");
-              chrome.tabs.getCurrent((tab) => {
-                chrome.tabs.sendMessage(tab.id, { message: status });
-              });
-            }}>
+          <button className="btn btn-default" onClick={() => changeStatus()}>
             {status}
           </button>
           {cancel ? (
@@ -124,9 +132,10 @@ const ManagerPanel = () => {
             ? steps.map((step) => {
                 return (
                   <Step
-                    key={Math.random()*10000}
+                    key={Math.random() * 10000}
                     step={step}
-                    deleteButton={deleteButton}></Step>
+                    deleteButton={deleteButton}
+                    selectorRequest={selectorRequest}></Step>
                 );
               })
             : null}

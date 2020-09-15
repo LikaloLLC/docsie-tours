@@ -149,7 +149,9 @@ function onElementClick(e) {
   if (_panel.contains(target)) return;
   const path = getElementFullPath(target);
   updatePanel(path);
+  console.log("AAAAAAAAAAAAAAAAAAAA", path, typeof path)
   chrome.runtime.sendMessage({ message: path });
+  hideOverlay()
 }
 
 function showOverlay() {
@@ -190,8 +192,14 @@ function init() {
   showOverlay();
 }
 
+chrome.runtime.onMessage.addListener((msg) => {
+  console.log("test",msg)
+  if (msg.message === "selector request") init()
+});
+
 chrome.extension.onMessage.addListener(
   function (request, sender, sendResponse) {
+    console.log("request.message",request.message)
     switch (request.message) {
       case "cancel":
         hideOverlay();
@@ -209,5 +217,3 @@ chrome.extension.sendMessage({}, function (response) {
     }
   }, 10);
 });
-
-init();

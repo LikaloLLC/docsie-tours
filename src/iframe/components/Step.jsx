@@ -1,47 +1,40 @@
 import React, { useContext } from "react";
 import { StepContext } from "../context/StepState";
-import Serialize from "../utils/serialize";
 
 /* global chrome */
-const Step = ({ step, deleteButton }) => {
-  const { steps, editStep } = useContext(StepContext);
-
-  /* const addSelector =() => {
-    port.sendMessage((msg) => {
-      if (msg.token) {
-        setToken(msg.token);
-        getUser(msg.token)
-      }
-    });
-  } */
-
-  const onSubmit = (e, id) => {
-    e.preventDefault();
-    editStep(id, Serialize(e.target));
-  };
+const Step = ({ step, deleteButton, selectorRequest }) => {
+  const { steps, editStep } = useContext(StepContext);  
   return (
     <div className="card step">
       <form
-        className="card-form"
-        onSubmit={(e) => onSubmit(e, steps.indexOf(step))}>
+        className="card-form">
         <div className="card-header d-flex">
           <div>Step {step.step}</div>
           <div class="ml-auto">
-            <button class="btn btn-icon mr-2">
-              <svg class="icon-save" width="20" height="20" viewBox="0 0 20 20">
+            <button class="btn btn-icon mr-2" type="button" onClick={() => selectorRequest(steps.indexOf(step))}>
+              <svg
+                className="icon-location"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
                 <path
-                  d="M1.5 1.5H16L18.5 4v14.5h-17z"
                   fill="none"
-                  stroke="currentColor"
-                />
-                <path
-                  d="M4.5 18.5v-8h11v8M14.5 2v5.5h-9V2M12 3v3M7 13h6M7 15h4"
+                  stroke="#000"
+                  stroke-width="1.01"
+                  d="M10,0.5 C6.41,0.5 3.5,3.39 3.5,6.98 C3.5,11.83 10,19 10,19 C10,19 16.5,11.83 16.5,6.98 C16.5,3.39 13.59,0.5 10,0.5 L10,0.5 Z"></path>
+                <circle
                   fill="none"
-                  stroke="currentColor"
-                />
+                  stroke="#000"
+                  cx="10"
+                  cy="6.8"
+                  r="2.3"></circle>
               </svg>
             </button>
-            <button class="btn btn-secondary btn-icon" type="button" onClick={() => deleteButton(step)}>
+            <button
+              class="btn btn-secondary btn-icon"
+              type="button"
+              onClick={() => deleteButton(step)}>
               <svg
                 class="icon-trash"
                 width="20"
@@ -68,6 +61,8 @@ const Step = ({ step, deleteButton }) => {
             <input
               name="title"
               defaultValue={step.title}
+              placeholder="Step title"
+              onBlur={(e) => editStep(steps.indexOf(step), e.target.value, "title")}
               className="form-control"></input>
           </div>
           <div className="form-group">
@@ -77,9 +72,15 @@ const Step = ({ step, deleteButton }) => {
             <textarea
               name="content"
               defaultValue={step.content}
+              placeholder="Step content"
+              onBlur={(e) => editStep(steps.indexOf(step), e.target.value, "content")}
               className="form-control"></textarea>
           </div>
-          <small className="d-inline-block text-truncate" style={{ maxWidth: "230px" }}>{step.selector || "[no selector]"}</small>
+          <small
+            className="d-inline-block text-truncate"
+            style={{ maxWidth: "230px" }}>
+            {step.selector || "[no selector]"}
+          </small>
         </div>
       </form>
     </div>
