@@ -1,5 +1,5 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import "../css/bootstrap-docsie.css";
 import "./App.css";
 import ManagerPanel from "./components/ManagerPanel";
 

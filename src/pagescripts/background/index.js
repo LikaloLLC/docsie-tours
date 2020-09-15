@@ -1,4 +1,5 @@
-const domain = "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/";
+import Config from "../../config.json";
+const domain = Config.urls.base;
 const csrfcookie = "csrftoken";
 function getCookies(domain, name, callback) {
   chrome.cookies.get({ url: domain, name }, function (cookie) {
@@ -53,7 +54,7 @@ chrome.runtime.onConnect.addListener(function (port) {
         file: "/highlight.js",
       });
       chrome.tabs.executeScript({
-        file: "/insertScript.js",
+        file: "/inject.js",
       });
     });
   }
@@ -68,7 +69,7 @@ chrome.runtime.onMessageExternal.addListener((data) => {
       (tab) => {
         setTimeout(() => {
           chrome.tabs.executeScript({ file: "/highlight.js" });
-          chrome.tabs.executeScript({ file: "/insertScript.js" }, (a) => {
+          chrome.tabs.executeScript({ file: "/inject.js" }, (a) => {
             chrome.tabs.sendMessage(tab.id, { message: "show_iframe" });
           });
         }, 2500);

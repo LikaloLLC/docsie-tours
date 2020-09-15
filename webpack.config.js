@@ -1,5 +1,4 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const nodeExternals = require("webpack-node-externals");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
@@ -8,6 +7,9 @@ module.exports = {
   entry: {
     index: "./src/iframe/index.js",
     popup: "./src/popup/index.js",
+    background: "./src/pagescripts/background/index.js",
+    highlight: "./src/pagescripts/highlight/index.js",
+    inject: "./src/pagescripts/inject/index.js"
   },
 
   module: {
