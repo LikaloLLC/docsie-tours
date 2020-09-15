@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import Config from "../../config.json";
 const domain = Config.urls.base;
 const csrfcookie = "csrftoken";

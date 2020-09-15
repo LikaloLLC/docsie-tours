@@ -24,5 +24,7 @@ chrome.runtime.onMessage.addListener((msg) => {
       break;
     case "cancel":
       iframe.remove();
+      break;
+    default:
   }
 });
