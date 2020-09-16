@@ -149,7 +149,6 @@ function onElementClick(e) {
   if (_panel.contains(target)) return;
   const path = getElementFullPath(target);
   updatePanel(path);
-  console.log("AAAAAAAAAAAAAAAAAAAA", path, typeof path)
   chrome.runtime.sendMessage({ message: path });
   hideOverlay()
 }
@@ -193,7 +192,6 @@ function init() {
 }
 
 chrome.runtime.onMessage.addListener((msg) => {
-  console.log("test",msg)
   if (msg.message === "selector request") init()
 });
 
