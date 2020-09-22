@@ -1,17 +1,13 @@
 import React from "react";
 import "../css/bootstrap-docsie.css";
 import "./App.css";
-import ShelfSelector from "./components/ShelfSelector";
-
-import { UserProvider } from "./context/UserState";
+import Popup from "./components/index";
 
 function App() {
   return (
-    <UserProvider>
-      <div className="App">
-        <ShelfSelector />
-      </div>
-    </UserProvider>
+    <div className="App">
+      <Popup />
+    </div>
   );
 }
 

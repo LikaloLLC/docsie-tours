@@ -1,23 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
 import Step from "./Step";
+import Navbar from "./Navbar";
 import { StepContext } from "../context/StepState";
 
 /* global chrome */
 const ManagerPanel = () => {
   const {
+    tourTitle,
+    shelf,
     steps,
+    setShelfs,
     addStep,
     deleteStep,
-    saveTour,
-    setShelf,
-    editStep
+    editStep,
   } = useContext(StepContext);
 
-  const [title, setTitle] = useState("Tour");
-  const [token, setToken] = useState("");
-  const [url, setUrl] = useState();
   const [status, setStatus] = useState("Minimize");
-  const [cancel, setCancel] = useState(false);
   const [stepId, setStepId] = useState();
   const [selector, setSelector] = useState(null);
 
@@ -25,18 +23,17 @@ const ManagerPanel = () => {
 
   useEffect(() => {
     if (selector) {
-      editStep(stepId, selector, "selector")
+      editStep(stepId, selector, "selector");
       changeStatus();
-      setSelector(null)
+      setSelector(null);
     }
   }, [selector]);
 
   useEffect(() => {
     port.onMessage.addListener((msg) => {
-      if (msg.token) {
-        setToken(msg.token);
-        setUrl(msg.url);
-        setShelf(msg.shelfId);
+      console.log(msg);
+      if (msg.shelfs) {
+        setShelfs(msg.shelfs.data);
       }
     });
 
@@ -85,47 +82,23 @@ const ManagerPanel = () => {
     });
   };
 
+  const saveTour = () => {
+    port.postMessage({
+      message: "save tour",
+      tour: steps,
+      shelf: shelf,
+      title: tourTitle,
+    });
+  };
+
   return (
     <div id="main" className="d-flex flex-column">
-      <div className="navbar navbar-light border-bottom d-flex align-items-center test">
-        <form className="form-inline my-2 my-lg-0">
-          <label htmlFor="title" className="col-form-label mr-2">
-            Title:
-          </label>
-          <input
-            id="title"
-            name="title"
-            className="form-control"
-            defaultValue={title}
-            onChange={(e) => setTitle(e.target.value)}></input>
-        </form>
-        <div className=" btn-group ml-auto" role="group">
-          <button className="btn btn-default" onClick={() => changeStatus()}>
-            {status}
-          </button>
-          {cancel ? (
-            <div class="btn-group" role="group">
-              <button className="btn btn-default" onClick={() => cancelGuide()}>
-                I want to discard all unsaved changes
-              </button>
-              <button
-                className="btn btn-default"
-                onClick={() => setCancel(false)}>
-                Back
-              </button>
-            </div>
-          ) : (
-            <button className="btn btn-default" onClick={() => setCancel(true)}>
-              Cancel
-            </button>
-          )}
-          <button
-            className="btn btn-primary"
-            onClick={() => saveTour(token, title, url)}>
-            Save
-          </button>
-        </div>
-      </div>
+      <Navbar
+        cancelGuide={cancelGuide}
+        changeStatus={changeStatus}
+        status={status}
+        saveTour={saveTour}
+      />
       <div className="step-container container-fluid border-bottom">
         <div className="card-deck d-flex flex-row flex-nowrap">
           {Array.isArray(steps)

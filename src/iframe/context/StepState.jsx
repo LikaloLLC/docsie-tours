@@ -1,13 +1,10 @@
 import React, { createContext, useReducer } from "react";
-import axios from "axios";
 import StepReducer from "./StepReducer";
-import { URI } from "../../utils";
-import Config from "../../config.json";
 
 const initialState = {
+  tourTitle: null,
   steps: [],
-  user: null,
-  book: null,
+  shelfs: [],
   shelf: null,
 };
 
@@ -15,6 +12,28 @@ export const StepContext = createContext(initialState);
 
 export const StepProvider = ({ children }) => {
   const [state, dispatch] = useReducer(StepReducer, initialState);
+
+  function setTourTitle(title) {
+    try {
+      dispatch({
+        type: "TITLE_CHANGE",
+        payload: title,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  function setShelfs(shelfs) {
+    try {
+      dispatch({
+        type: "SHELFS_LOAD",
+        payload: shelfs,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   function addStep(step) {
     try {
@@ -76,104 +95,19 @@ export const StepProvider = ({ children }) => {
     }
   }
 
-  async function getUser(token) {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": token,
-      },
-    };
-    try {
-      const user = await axios.get(new URI(Config.urls.auth.user), config);
-      state.user = user.data;
-      console.log(user, state.user);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function saveTour(token, title, url) {
-    //headers
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": token,
-      },
-    };
-    const body = {
-      name: title,
-      type: "tour",
-    };
-    const articleData = {
-      name: "tour",
-      description: url,
-      doc: {
-        v: 1,
-        blocks: [],
-        entityMap: {},
-        meta: {
-          autorun: true,
-          linked: false,
-        },
-        steps: JSON.stringify(state.steps),
-      },
-      tags: [],
-      template: "tour",
-    };
-    console.log(token);
-    try {
-      const books = await axios.get(
-        new URI(Config.urls.book.all, { shelfId: state.shelf }),
-        body,
-        config
-      );
-      console.log(books);
-      let tourBook;
-      books.data.map(async (book) => {
-        if (book.type === "tour") {
-          tourBook = book;
-          console.log(tourBook);
-        }
-      });
-      if (tourBook) {
-        axios.post(
-          new URI(Config.urls.article.all, {
-            languageId: tourBook.language.id,
-          }),
-          articleData,
-          config
-        );
-      } else {
-        const book = await axios.post(
-          new URI(Config.urls.book.all, { shelfId: state.shelf }), //lan_5CugfAlCIlunJwcqY
-          body,
-          config
-        );
-        await axios.post(
-          new URI(Config.urls.article.all, {
-            languageId: book.data.book.language.id,
-          }),
-          articleData,
-          config
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   return (
     <StepContext.Provider
       value={{
         steps: state.steps,
-        user: state.user,
-        book: state.book,
+        tourTitle: state.tourTitle,
+        shelfs: state.shelfs,
+        shelf: state.shelf,
+        setTourTitle,
         addStep,
         deleteStep,
         editStep,
-        getUser,
-        saveTour,
         setShelf,
+        setShelfs,
       }}>
       {children}
     </StepContext.Provider>

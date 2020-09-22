@@ -1,8 +1,8 @@
 export default (state, action) => {
   switch (action.type) {
     case "ADD_STEP":
-      let _steps = [...state.steps]
-      _steps.push(action.payload)
+      let _steps = [...state.steps];
+      _steps.push(action.payload);
       return {
         ...state,
         steps: [..._steps],
@@ -10,7 +10,7 @@ export default (state, action) => {
     case "DELETE_STEP":
       return {
         ...state,
-        steps: [...action.payload]
+        steps: [...action.payload],
       };
     case "SET_SHELF":
       return {
@@ -21,6 +21,16 @@ export default (state, action) => {
       return {
         ...state,
         book: action.payload,
+      };
+    case "TITLE_CHANGE":
+      return {
+        ...state,
+        tourTitle: action.payload,
+      };
+    case "SHELFS_LOAD":
+      return {
+        ...state,
+        shelfs: [...action.payload],
       };
     default:
       return state;

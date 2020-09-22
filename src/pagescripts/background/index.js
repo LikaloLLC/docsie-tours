@@ -1,7 +1,11 @@
 /* eslint-disable no-undef */
 import Config from "../../config.json";
+import { getUser, getShelfs, saveTour } from "./requests";
+
 const domain = Config.urls.base;
 const csrfcookie = "csrftoken";
+let bookId, tourOriginUrl, cookie, user, shelfs;
+
 function getCookies(domain, name, callback) {
   chrome.cookies.get({ url: domain, name }, function (cookie) {
     if (callback) {
@@ -10,21 +14,17 @@ function getCookies(domain, name, callback) {
   });
 }
 function getCSRFCookie(then) {
-  getCookies(
-    domain,
-    csrfcookie,
-    then
-  );
+  getCookies(domain, csrfcookie, then);
 }
-let bookId, shelfId, tourOriginUrl;
-chrome.runtime.onConnect.addListener(function (port) {
+getCSRFCookie((id) => {
+  cookie = id;
+});
+
+chrome.runtime.onConnect.addListener(async function (port) {
   if (port.name === "iframe") {
-    getCSRFCookie(
-      (id) => {
-        port.postMessage({ token: id, shelfId, url: tourOriginUrl });
-      }
-    );
-    port.postMessage({ bookId });
+    user = await getUser(cookie);
+    shelfs = await getShelfs(user, cookie);
+    port.postMessage({ shelfs });
 
     port.onMessage.addListener((data) => {
       if (data.message === "Minimize" || data.message === "Maximize")
@@ -32,25 +32,31 @@ chrome.runtime.onConnect.addListener(function (port) {
       if (data.message === "cancel") {
         chrome.tabs.sendMessage(data.tabId, { message: data.message });
       }
+      if (data.message === "save tour") {
+        saveTour(cookie, tourOriginUrl, data.title, data.tour, data.shelf);
+      }
     });
   }
+
   if (port.name === "highlight") {
     window.highlight = port.name;
     port.onMessage.addListener((data) => {
       console.log(data);
     });
   }
+
   if (port.name === "popup") {
-    getCSRFCookie(
-      (id) => {
-        port.postMessage({ token: id });
-      }
-    );
-    chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
+    if (cookie) {
+      console.log("cookie", cookie);
+      port.postMessage({ status: "logged in" });
+    } else {
+      port.postMessage({ status: "not logged in" });
+    }
+
+    chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
       tourOriginUrl = tabs[0].url;
     });
     port.onMessage.addListener((data) => {
-      shelfId = data.message;
       chrome.tabs.executeScript({
         file: "/highlight.js",
       });
@@ -60,20 +66,17 @@ chrome.runtime.onConnect.addListener(function (port) {
     });
   }
 });
+
 chrome.runtime.onMessageExternal.addListener((data) => {
   if (data.url) {
-    bookId = data.message;
+    //bookId = data.message;
     chrome.tabs.create(
       {
         url: data.url,
       },
-      (tab) => {
-        setTimeout(() => {
-          chrome.tabs.executeScript({ file: "/highlight.js" });
-          chrome.tabs.executeScript({ file: "/inject.js" }, (a) => {
-            chrome.tabs.sendMessage(tab.id, { message: "show_iframe" });
-          });
-        }, 2500);
+      () => {
+        chrome.tabs.executeScript({ file: "/highlight.js" });
+        chrome.tabs.executeScript({ file: "/inject.js" });
       }
     );
   }
