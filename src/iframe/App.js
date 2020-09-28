@@ -5,6 +5,7 @@ import ManagerPanel from "./components/ManagerPanel";
 
 import { StepProvider } from "./context/StepState";
 
+/* global chrome */
 function App() {
   return (
     <StepProvider>

@@ -3,9 +3,7 @@ import StepReducer from "./StepReducer";
 
 const initialState = {
   tourTitle: null,
-  steps: [],
-  shelfs: [],
-  shelf: null,
+  steps: null,
 };
 
 export const StepContext = createContext(initialState);
@@ -13,22 +11,22 @@ export const StepContext = createContext(initialState);
 export const StepProvider = ({ children }) => {
   const [state, dispatch] = useReducer(StepReducer, initialState);
 
-  function setTourTitle(title) {
+  function setFlow(flow) {
     try {
       dispatch({
-        type: "TITLE_CHANGE",
-        payload: title,
+        type: "SETTING_FLOW",
+        payload: flow,
       });
     } catch (err) {
       console.log(err);
     }
   }
 
-  function setShelfs(shelfs) {
+  function setTourTitle(title) {
     try {
       dispatch({
-        type: "SHELFS_LOAD",
-        payload: shelfs,
+        type: "TITLE_CHANGE",
+        payload: title,
       });
     } catch (err) {
       console.log(err);
@@ -84,30 +82,16 @@ export const StepProvider = ({ children }) => {
     }
   }
 
-  function setShelf(shelf) {
-    try {
-      dispatch({
-        type: "SET_SHELF",
-        payload: shelf,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   return (
     <StepContext.Provider
       value={{
         steps: state.steps,
         tourTitle: state.tourTitle,
-        shelfs: state.shelfs,
-        shelf: state.shelf,
+        setFlow,
         setTourTitle,
         addStep,
         deleteStep,
         editStep,
-        setShelf,
-        setShelfs,
       }}>
       {children}
     </StepContext.Provider>

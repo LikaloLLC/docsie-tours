@@ -28,7 +28,9 @@ export async function getShelfs(user, token) {
 
   try {
     const shelfs = await axios.get(
-      new URI(Config.urls.library.all, { workspaceId: user.data.spaces[0].id }),
+      new URI(Config.urls.library.all, {
+        workspaceId: user.data.profile_details.workspace,
+      }),
       config
     );
     return shelfs;
@@ -37,7 +39,7 @@ export async function getShelfs(user, token) {
   }
 }
 
-export async function saveTour(token, url, title, tour, shelf) {
+export async function getBooks(shelf, token) {
   //headers
   const config = {
     headers: {
@@ -45,7 +47,136 @@ export async function saveTour(token, url, title, tour, shelf) {
       "X-CSRFToken": token,
     },
   };
-  const body = {
+
+  try {
+    const books = await axios.get(
+      new URI(Config.urls.book.all, { shelfId: shelf }),
+      config
+    );
+    return books;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function getFlows(languageId, token) {
+  //headers
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": token,
+    },
+  };
+  try {
+    const flows = await axios.get(
+      new URI(Config.urls.article.all, {
+        languageId: languageId,
+      }),
+      config
+    );
+    return flows;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function getFlow(flowId, token) {
+  //headers
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": token,
+    },
+  };
+
+  try {
+    const flow = await axios.get(
+      new URI(Config.urls.article.details, {
+        articleId: flowId,
+      }),
+      config
+    );
+    return flow;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function newFlow(token, title, languageId, url){
+  //headers
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": token,
+    },
+  };
+
+  const articleData = {
+    name: title,
+    description: url,
+    doc: {
+      v: 1,
+      blocks: [],
+      entityMap: {},
+      meta: {
+        autorun: true,
+        linked: false,
+      },
+      steps: "",
+    },
+    tags: [],
+    template: "tour",
+  };
+  
+  try {
+    const flow = await axios.post(
+      new URI(Config.urls.article.all, {
+        languageId,
+      }),
+      articleData,
+      config
+    );
+    return flow
+  } catch (err) {
+    console.log(err)    
+  }
+
+}
+
+export async function saveFlow(token, url, title, tour, flowId) {
+  //headers
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": token,
+    },
+  };
+  const articleData = {
+    name: title,
+    description: url,
+    doc: {
+      v: 1,
+      blocks: [],
+      entityMap: {},
+      meta: {
+        autorun: true,
+        linked: false,
+      },
+      steps: JSON.stringify(tour),
+    },
+    tags: [],
+    template: "tour",
+  };
+  try {
+    axios.put(
+      new URI(Config.urls.article.details, { articleId: flowId }),
+      articleData,
+      config
+    );
+  } catch (err) {
+    console.log(err);
+  }
+  /* const body = {
     name: title,
     type: "tour",
   };
@@ -65,19 +196,16 @@ export async function saveTour(token, url, title, tour, shelf) {
     tags: [],
     template: "tour",
   };
-  console.log(token);
   try {
     const books = await axios.get(
       new URI(Config.urls.book.all, { shelfId: shelf }),
       body,
       config
     );
-    console.log(books);
     let tourBook;
     books.data.map(async (book) => {
       if (book.type === "tour") {
         tourBook = book;
-        console.log(tourBook);
       }
     });
     if (tourBook) {
@@ -90,7 +218,7 @@ export async function saveTour(token, url, title, tour, shelf) {
       );
     } else {
       const book = await axios.post(
-        new URI(Config.urls.book.all, { shelfId: shelf }), //lan_5CugfAlCIlunJwcqY
+        new URI(Config.urls.book.all, { shelfId: shelf }),
         body,
         config
       );
@@ -104,5 +232,5 @@ export async function saveTour(token, url, title, tour, shelf) {
     }
   } catch (err) {
     console.log(err);
-  }
+  } */
 }

@@ -1,6 +1,6 @@
 {
   "urls": {
-    "base": "https://app.docsie.io",
+    "base": "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/",
     "auth": {
       "user": "/rest-auth/user/"
     },
@@ -11,19 +11,19 @@
     },
     "book": {
         "all": "/app/documentation/:shelfId/books/",
-        "details": "/book/:bookId/"
+        "details": "/app/book/:bookId/"
     },
     "version": {
         "all": "/app/book/:bookId/versions/",
-        "details": "/version/:versionId/"
+        "details": "/app/version/:versionId/"
     },
     "language": {
         "all": "/app/version/:versionId/languages/",
-        "details": "/language/:languageId/"
+        "details": "/app/language/:languageId/"
     },
     "article": {
         "all": "/app/language/:languageId/articles/",
-        "details": "/article/:articleId/"
+        "details": "/app/article/:articleId/"
     }
   }
 }

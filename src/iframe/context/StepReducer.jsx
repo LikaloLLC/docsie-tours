@@ -1,5 +1,10 @@
 export default (state, action) => {
   switch (action.type) {
+    case "SETTING_FLOW":
+      return{
+        ...state,
+        steps: action.payload
+      }
     case "ADD_STEP":
       let _steps = [...state.steps];
       _steps.push(action.payload);
@@ -32,6 +37,11 @@ export default (state, action) => {
         ...state,
         shelfs: [...action.payload],
       };
+    case "SET_SUBJECT":
+      return {
+        ...state,
+        subjectName: action.payload
+      }
     default:
       return state;
   }

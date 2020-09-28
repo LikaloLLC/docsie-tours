@@ -1,10 +1,18 @@
 /* eslint-disable no-undef */
 import Config from "../../config.json";
-import { getUser, getShelfs, saveTour } from "./requests";
+import {
+  getUser,
+  getShelfs,
+  getBooks,
+  getFlows,
+  getFlow,
+  newFlow,
+  saveFlow,
+} from "./requests";
 
 const domain = Config.urls.base;
 const csrfcookie = "csrftoken";
-let bookId, tourOriginUrl, cookie, user, shelfs;
+let tourOriginUrl, cookie, user, shelfs, books, flows, flow, flowId;
 
 function getCookies(domain, name, callback) {
   chrome.cookies.get({ url: domain, name }, function (cookie) {
@@ -21,11 +29,7 @@ getCSRFCookie((id) => {
 });
 
 chrome.runtime.onConnect.addListener(async function (port) {
-  if (port.name === "iframe") {
-    user = await getUser(cookie);
-    shelfs = await getShelfs(user, cookie);
-    port.postMessage({ shelfs });
-
+  if (port.name === "ManagerPanel") {
     port.onMessage.addListener((data) => {
       if (data.message === "Minimize" || data.message === "Maximize")
         port.postMessage({ message: data.message });
@@ -33,21 +37,42 @@ chrome.runtime.onConnect.addListener(async function (port) {
         chrome.tabs.sendMessage(data.tabId, { message: data.message });
       }
       if (data.message === "save tour") {
-        saveTour(cookie, tourOriginUrl, data.title, data.tour, data.shelf);
+        saveFlow(cookie, tourOriginUrl, data.title, data.tour, flowId);
       }
     });
   }
 
-  if (port.name === "highlight") {
-    window.highlight = port.name;
-    port.onMessage.addListener((data) => {
-      console.log(data);
+  if (port.name === "SetupWizard") {
+    port.onMessage.addListener(async (data) => {
+      if (data.message === "shelf request") {
+        user = await getUser(cookie);
+        shelfs = await getShelfs(user, cookie);
+        port.postMessage({ shelfs });
+      }
+      if (data.message === "create new flow") {
+        flow = newFlow(data.title, data.languageId, cookie, tourOriginUrl);
+        flowId = flow.data.id;
+        port.postMessage({ flows });
+      }
+      if (data.shelfId) {
+        books = await getBooks(data.shelfId, cookie);
+        port.postMessage({ books: books });
+      }
+      if (data.languageId) {
+        flows = await getFlows(data.languageId, cookie);
+        port.postMessage({ flows });
+      }
+      if (data.flowId) {
+        flowId = data.flowId;
+        flow = await getFlow(data.flowId, cookie);
+        console.log(flow);
+        port.postMessage({ flow });
+      }
     });
   }
 
   if (port.name === "popup") {
     if (cookie) {
-      console.log("cookie", cookie);
       port.postMessage({ status: "logged in" });
     } else {
       port.postMessage({ status: "not logged in" });
@@ -67,16 +92,20 @@ chrome.runtime.onConnect.addListener(async function (port) {
   }
 });
 
-chrome.runtime.onMessageExternal.addListener((data) => {
+chrome.runtime.onMessageExternal.addListener(async (data) => {
   if (data.url) {
-    //bookId = data.message;
+    flowId = data.flowId;
+    flow = await getFlow(data.flowId, cookie);
     chrome.tabs.create(
       {
         url: data.url,
       },
-      () => {
+      (tab) => {
+        console.log(tab, flow);
+
         chrome.tabs.executeScript({ file: "/highlight.js" });
         chrome.tabs.executeScript({ file: "/inject.js" });
+        chrome.tabs.sendMessage(tab.id, { flow });
       }
     );
   }
