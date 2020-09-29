@@ -7,7 +7,6 @@ const Dropdown = ({ subject, setId, disabled }) => {
         class="custom-select"
         disabled={`${!subject ? "true" : ""}`}
         onChange={(e) => {
-          console.log(e.target.value);
           setId(e.target.value);
         }}>
         {subject

@@ -33,7 +33,6 @@ const ManagerPanel = () => {
 
   useEffect(() => {
     chrome.runtime.onMessage.addListener((msg) => {
-      setTimeout(console.log(msg), 1000)
       if (typeof msg.message === "string") {
         setSelector(msg.message);
       }

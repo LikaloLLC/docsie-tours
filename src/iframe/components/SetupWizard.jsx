@@ -31,6 +31,7 @@ const SetupWizard = () => {
   const setShelf = (shelfId) => {
     setBooks();
     setFlows();
+    setNewFlow(false);
     setLanguageId();
     port.postMessage({ shelfId });
     port.onMessage.addListener((msg) => {
@@ -41,6 +42,7 @@ const SetupWizard = () => {
   };
   const setBook = (languageId) => {
     setFlows();
+    setNewFlow(false);
     setLanguageId(languageId);
     port.postMessage({ languageId });
     port.onMessage.addListener((msg) => {
@@ -148,7 +150,7 @@ const SetupWizard = () => {
                   <label for="exampleFormControlSelect1">and</label>
                   <button
                     className="btn btn-primary btn-lg btn-block"
-                    disabled={`${!title ? "true" : ""}`}
+                    disabled={`${!title && !newFlow ? "true" : ""}`}
                     onClick={() => createFlow()}>
                     Define flow steps
                   </button>

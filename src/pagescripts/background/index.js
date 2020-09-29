@@ -101,11 +101,13 @@ chrome.runtime.onMessageExternal.addListener(async (data) => {
         url: data.url,
       },
       (tab) => {
-        console.log(tab, flow);
-
         chrome.tabs.executeScript({ file: "/highlight.js" });
         chrome.tabs.executeScript({ file: "/inject.js" });
-        chrome.tabs.sendMessage(tab.id, { flow });
+        chrome.tabs.onUpdated.addListener((tabId, info) => {
+          if (info.status === "complete"&& tabId===tab.id) {
+            chrome.tabs.sendMessage(tabId, { flow });
+          }
+        });
       }
     );
   }
