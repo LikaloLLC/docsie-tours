@@ -50,13 +50,16 @@ chrome.runtime.onConnect.addListener(async function (port) {
         port.postMessage({ shelfs });
       }
       if (data.message === "create new flow") {
-        flow = newFlow(data.title, data.languageId, cookie, tourOriginUrl);
+        flow = await newFlow(data.title, data.languageId, tourOriginUrl, cookie);
         flowId = flow.data.id;
-        port.postMessage({ flows });
+        port.postMessage({ flow });
+      }
+      if (data.message === "cancel") {
+        chrome.tabs.sendMessage(data.tabId, { message: data.message });
       }
       if (data.shelfId) {
         books = await getBooks(data.shelfId, cookie);
-        port.postMessage({ books: books });
+        port.postMessage({ books });
       }
       if (data.languageId) {
         flows = await getFlows(data.languageId, cookie);
@@ -65,7 +68,6 @@ chrome.runtime.onConnect.addListener(async function (port) {
       if (data.flowId) {
         flowId = data.flowId;
         flow = await getFlow(data.flowId, cookie);
-        console.log(flow);
         port.postMessage({ flow });
       }
     });

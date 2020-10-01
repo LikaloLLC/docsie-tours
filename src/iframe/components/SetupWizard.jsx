@@ -28,6 +28,12 @@ const SetupWizard = () => {
     };
   }, []);
 
+  const closeExtension = () => {
+    chrome.tabs.getCurrent((tab) => {
+      port.postMessage({ message: "cancel", tabId: tab.id });
+    });
+  };
+
   const setShelf = (shelfId) => {
     setBooks();
     setFlows();
@@ -36,7 +42,7 @@ const SetupWizard = () => {
     port.postMessage({ shelfId });
     port.onMessage.addListener((msg) => {
       if (msg.books) {
-        setBooks(msg.books.data);
+        setBooks(msg.books);
       }
     });
   };
@@ -77,7 +83,14 @@ const SetupWizard = () => {
   }`;
   return (
     <>
-      <h1>Setup wizard</h1>
+      <div className="navbar navbar-light border-bottom d-flex align-items-center main">
+        <h1>Setup wizard</h1>
+        <button
+          className="btn btn-default ml-auto"
+          onClick={() => closeExtension()}>
+          Close
+        </button>
+      </div>
       <div id="main" className="d-flex flex-column">
         <div className="step-container container-fluid border-bottom">
           <div className="card-group my-3">
@@ -92,7 +105,7 @@ const SetupWizard = () => {
                     <Dropdown
                       subject={shelfs}
                       setId={setShelf}
-                      _subjectName="shelfs"
+                      subjectName="shelf"
                     />
                   </div>
                   <div className="form-group">
@@ -102,7 +115,7 @@ const SetupWizard = () => {
                     <Dropdown
                       subject={books}
                       setId={setBook}
-                      _subjectName="books"
+                      subjectName="book"
                     />
                   </div>
                 </form>
@@ -116,7 +129,11 @@ const SetupWizard = () => {
                     <label for="exampleFormControlSelect1">
                       3. Select a flow to update
                     </label>
-                    <Dropdown subject={flows} setId={ChooseFlow} />
+                    <Dropdown
+                      subject={flows}
+                      setId={ChooseFlow}
+                      subjectName="flow"
+                    />
                   </div>
                   <div className="form-group">
                     <label for="exampleFormControlSelect1">or</label>

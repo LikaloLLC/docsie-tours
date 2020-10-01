@@ -2,11 +2,11 @@ import React, { useState, useContext } from "react";
 import { StepContext } from "../context/StepState";
 
 const Navbar = ({ cancelGuide, changeStatus, status, saveTour }) => {
-  const { tourTitle, setTourTitle } = useContext(StepContext);
+  const { tourTitle, setTourTitle, setFlow } = useContext(StepContext);
   const [cancel, setCancel] = useState(false);
 
   return (
-    <div className="navbar navbar-light border-bottom d-flex align-items-center test">
+    <div className="navbar navbar-light border-bottom d-flex align-items-center">
       <form className="form-inline my-2 my-lg-0">
         <label htmlFor="title" className="col-form-label mr-2">
           Title:
@@ -22,6 +22,9 @@ const Navbar = ({ cancelGuide, changeStatus, status, saveTour }) => {
       <div className=" btn-group ml-auto" role="group">
         <button className="btn btn-default" onClick={() => changeStatus()}>
           {status}
+        </button>
+        <button className="btn btn-default" onClick={() => setFlow(null)}>
+          Back to flow selector
         </button>
         {cancel ? (
           <div class="btn-group" role="group">

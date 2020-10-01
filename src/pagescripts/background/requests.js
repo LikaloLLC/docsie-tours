@@ -53,7 +53,11 @@ export async function getBooks(shelf, token) {
       new URI(Config.urls.book.all, { shelfId: shelf }),
       config
     );
-    return books;
+    let tourBooks = []
+    books.data.map(book => {
+      book.type === "tour" ? tourBooks.push(book): null
+    })
+    return tourBooks;
   } catch (err) {
     console.log(err);
   }
@@ -102,7 +106,7 @@ export async function getFlow(flowId, token) {
   }
 }
 
-export async function newFlow(token, title, languageId, url){
+export async function newFlow(title, languageId, url, token){
   //headers
   const config = {
     headers: {
@@ -176,61 +180,4 @@ export async function saveFlow(token, url, title, tour, flowId) {
   } catch (err) {
     console.log(err);
   }
-  /* const body = {
-    name: title,
-    type: "tour",
-  };
-  const articleData = {
-    name: "tour",
-    description: url,
-    doc: {
-      v: 1,
-      blocks: [],
-      entityMap: {},
-      meta: {
-        autorun: true,
-        linked: false,
-      },
-      steps: JSON.stringify(tour),
-    },
-    tags: [],
-    template: "tour",
-  };
-  try {
-    const books = await axios.get(
-      new URI(Config.urls.book.all, { shelfId: shelf }),
-      body,
-      config
-    );
-    let tourBook;
-    books.data.map(async (book) => {
-      if (book.type === "tour") {
-        tourBook = book;
-      }
-    });
-    if (tourBook) {
-      axios.post(
-        new URI(Config.urls.article.all, {
-          languageId: tourBook.language.id,
-        }),
-        articleData,
-        config
-      );
-    } else {
-      const book = await axios.post(
-        new URI(Config.urls.book.all, { shelfId: shelf }),
-        body,
-        config
-      );
-      await axios.post(
-        new URI(Config.urls.article.all, {
-          languageId: book.data.book.language.id,
-        }),
-        articleData,
-        config
-      );
-    }
-  } catch (err) {
-    console.log(err);
-  } */
 }
