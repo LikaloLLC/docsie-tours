@@ -57,18 +57,14 @@ const SetupWizard = () => {
       }
     });
   };
-  const ChooseFlow = (flowId) => {    
-    try {
-      flows.map((flow) => {
+  const ChooseFlow = (flowId) => {
+    flows.map((flow) => {
       if(flow.id === flowId) {
         setFlowId(flow.id)
         setFlow(flow.doc.steps)
         setTourTitle(flow.name);
       }
     })
-    } catch (err) {
-      console.log("object", err)      
-    }
     
     /* port.postMessage({ flowId });
     port.onMessage.addListener((msg) => {

@@ -83,7 +83,6 @@ const ManagerPanel = () => {
   };
 
   const saveTour = () => {
-    console.log("object", flowId)
     port.postMessage({
       message: "save tour",
       tour: steps,
