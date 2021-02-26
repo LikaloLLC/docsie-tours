@@ -10,6 +10,7 @@ const ManagerPanel = () => {
     setTourTitle,
     tourTitle,
     steps,
+    flowId,
     addStep,
     deleteStep,
     editStep,
@@ -82,10 +83,12 @@ const ManagerPanel = () => {
   };
 
   const saveTour = () => {
+    console.log("object", flowId)
     port.postMessage({
       message: "save tour",
       tour: steps,
       title: tourTitle,
+      flowId
     });
   };
 
