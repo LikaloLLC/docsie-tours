@@ -1,24 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Config from "../../config.json";
 
 /* global chrome */
 const ShelfSelector = () => {
-  const port = chrome.runtime.connect(chrome.runtime.id, {
-    name: "popup",
-  });
   const [loginStatus, setLoginStatus] = useState();
+  const portRef = useRef(null);
+  const domain = Config.urls.base;
 
   useEffect(() => {
-    port.onMessage.addListener((msg) => {
+    portRef.current = chrome.runtime.connect(chrome.runtime.id, {
+      name: "popup",
+    });
+    const onMessage = (msg) => {
       if (msg.status) {
-        console.log(msg.status);
         setLoginStatus(msg.status);
       }
-    });
+    };
+    portRef.current.onMessage.addListener(onMessage);
 
     return () => {
-      port.disconnect();
+      portRef.current.onMessage.removeListener(onMessage);
+      portRef.current.disconnect();
     };
   }, []);
+
   return (
     <div className="main d-flex flex-column ">
       {loginStatus === "logged in" ? (
@@ -26,12 +31,13 @@ const ShelfSelector = () => {
           <a
             className="btn elements btns btn-secondary"
             onClick={() => {
-              port.postMessage({
+              portRef.current.postMessage({
                 message: "start record",
               });
               window.close();
             }}
-            href="#void">
+            href="#void"
+          >
             Record a guide
           </a>
           <a className="btn elements btns btn-secondary" href="#void">
@@ -39,14 +45,20 @@ const ShelfSelector = () => {
           </a>
           <a
             className="btn elements btns btn-secondary"
-            href="https://app.docsie.io/accounts/logout/">
+            href={`${domain}accounts/logout`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             Log out
           </a>
         </>
       ) : (
         <a
           className="btn elements btns btn-secondary"
-          href="https://app.docsie.io/organization/docsie/#/">
+          href={`${domain}login`}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           Log in
         </a>
       )}

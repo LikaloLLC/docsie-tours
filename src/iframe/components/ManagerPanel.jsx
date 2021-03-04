@@ -1,9 +1,16 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+} from "react";
 import SetupWizard from "./SetupWizard";
 import Step from "./Step";
 import Navbar from "./Navbar";
 import { StepContext } from "../context/StepState";
 
+/* global chrome */
 const ManagerPanel = () => {
   const {
     setFlow,
@@ -17,36 +24,10 @@ const ManagerPanel = () => {
   } = useContext(StepContext);
 
   const [status, setStatus] = useState("Minimize");
-  const [stepId, setStepId] = useState();
   const [selector, setSelector] = useState(null);
-
-  const port = chrome.runtime.connect(chrome.runtime.id, {
-    name: "ManagerPanel",
-  });
-
-  useEffect(() => {
-    if (selector) {
-      editStep(stepId, selector, "selector");
-      changeStatus();
-      setSelector(null);
-    }
-  }, [selector]);
-
-  useEffect(() => {
-    chrome.runtime.onMessage.addListener((msg) => {
-      if (typeof msg.message === "string") {
-        setSelector(msg.message);
-      }
-      if (msg.flow) {
-        let steps = JSON.parse(msg.flow.data.doc.steps);
-        setTourTitle(msg.flow.data.name);
-        setFlow(steps);
-      }
-    });
-    return () => {
-      port.disconnect();
-    };
-  }, []);
+  const portRef = useRef(null);
+  const stepIdRef = useRef();
+  const prevSelector = useRef(selector);
 
   const step = {
     step: steps && steps.length > 0 ? steps[steps.length - 1].step + 1 : 1,
@@ -55,41 +36,77 @@ const ManagerPanel = () => {
     selector: null,
   };
 
+  useEffect(() => {
+    portRef.current = chrome.runtime.connect(chrome.runtime.id, {
+      name: "ManagerPanel",
+    });
+
+    return () => {
+      portRef.current.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const onMessage = (msg) => {
+      if (typeof msg.message === "string") {
+        setSelector(msg.message);
+      }
+      if (msg.flow) {
+        const docSteps = JSON.parse(msg.flow.data.doc.steps);
+        setTourTitle(msg.flow.data.name);
+        setFlow(docSteps);
+      }
+    };
+    chrome.runtime.onMessage.addListener(onMessage);
+
+    return () => {
+      chrome.runtime.onMessage.removeListener(onMessage);
+    };
+  }, [setFlow, setTourTitle]);
+
+  const changeStatus = useCallback(() => {
+    setStatus(status === "Minimize" ? "Maximize" : "Minimize");
+    chrome.tabs.getCurrent((tab) => {
+      chrome.tabs.sendMessage(tab.id, { message: status });
+    });
+  }, [status]);
+
   const selectorRequest = (stepId) => {
-    setStepId(stepId);
-    typeof stepId === "number"
-      ? chrome.tabs.getCurrent((tab) => {
-          chrome.tabs.sendMessage(tab.id, { message: "selector request" });
-          changeStatus();
-        })
-      : null;
+    stepIdRef.current = stepId;
+    if (typeof stepId === "number")
+      chrome.tabs.getCurrent((tab) => {
+        chrome.tabs.sendMessage(tab.id, { message: "selector request" });
+        changeStatus();
+      });
   };
 
   const deleteButton = (step) => {
     deleteStep(steps.indexOf(step));
   };
 
-  const changeStatus = () => {
-    setStatus(status === "Minimize" ? "Maximize" : "Minimize");
-    chrome.tabs.getCurrent((tab) => {
-      chrome.tabs.sendMessage(tab.id, { message: status });
-    });
-  };
-
   const cancelGuide = () => {
     chrome.tabs.getCurrent((tab) => {
-      port.postMessage({ message: "cancel", tabId: tab.id });
+      portRef.current.postMessage({ message: "cancel", tabId: tab.id });
     });
   };
 
   const saveTour = () => {
-    port.postMessage({
+    portRef.current.postMessage({
       message: "save tour",
       tour: steps,
       title: tourTitle,
-      flowId
+      flowId,
     });
   };
+
+  useEffect(() => {
+    if (prevSelector.current !== selector) {
+      prevSelector.current = selector;
+      editStep(stepIdRef.current, selector, "selector");
+      changeStatus();
+      setSelector(null);
+    }
+  }, [changeStatus, editStep, selector]);
 
   return (
     <>
@@ -110,19 +127,22 @@ const ManagerPanel = () => {
                         key={Math.random() * 10000}
                         step={step}
                         deleteButton={deleteButton}
-                        selectorRequest={selectorRequest}></Step>
+                        selectorRequest={selectorRequest}
+                      />
                     );
                   })
                 : null}
               <div className="card step">
                 <button
                   class="btn btn-icon h-100"
-                  onClick={() => addStep(step)}>
+                  onClick={() => addStep(step)}
+                >
                   <svg
                     class="icon-plus-circle"
                     width="48"
                     height="48"
-                    viewBox="0 0 20 20">
+                    viewBox="0 0 20 20"
+                  >
                     <g fill="none" stroke="currentColor">
                       <path d="M9 1h1v17H9z" />
                       <path d="M1 9h17v1H1z" />
