@@ -17,7 +17,8 @@ const Navbar = ({ cancelGuide, changeStatus, status, saveTour }) => {
           className="form-control"
           placeholder="Tour title"
           defaultValue={tourTitle}
-          onBlur={(e) => setTourTitle(e.target.value)}></input>
+          onBlur={(e) => setTourTitle(e.target.value)}
+        />
       </form>
       <div className=" btn-group ml-auto" role="group">
         <button className="btn btn-default" onClick={() => changeStatus()}>
@@ -33,7 +34,8 @@ const Navbar = ({ cancelGuide, changeStatus, status, saveTour }) => {
             </button>
             <button
               className="btn btn-default"
-              onClick={() => setCancel(false)}>
+              onClick={() => setCancel(false)}
+            >
               Back
             </button>
           </div>

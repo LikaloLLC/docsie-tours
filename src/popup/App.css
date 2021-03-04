@@ -45,19 +45,19 @@
 .menu {
   width: 280px;
 }
-.elements{
+.elements {
   margin-left: 10px;
   width: 280px;
 }
-.btns{
+.btns {
   margin-top: 15px;
 }
-.item{
+.item {
   width: 280px !important;
 }
-.test{
+.test {
   margin-left: 10px !important;
-  width:280px;
+  width: 280px;
 }
 
 .dropdown-item {

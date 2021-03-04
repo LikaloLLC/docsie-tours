@@ -4,26 +4,25 @@
     "auth": {
       "user": "/rest-auth/user/"
     },
-    "workspace": {
-    },
+    "workspace": {},
     "library": {
-        "all": "/app/documentation/?workspace=:workspaceId"
+      "all": "/app/documentation/?workspace=:workspaceId"
     },
     "book": {
-        "all": "/app/documentation/:shelfId/books/",
-        "details": "/app/book/:bookId/"
+      "all": "/app/documentation/:shelfId/books/",
+      "details": "/app/book/:bookId/"
     },
     "version": {
-        "all": "/app/book/:bookId/versions/",
-        "details": "/app/version/:versionId/"
+      "all": "/app/book/:bookId/versions/",
+      "details": "/app/version/:versionId/"
     },
     "language": {
-        "all": "/app/version/:versionId/languages/",
-        "details": "/app/language/:languageId/"
+      "all": "/app/version/:versionId/languages/",
+      "details": "/app/language/:languageId/"
     },
     "article": {
-        "all": "/app/language/:languageId/articles/",
-        "details": "/app/article/:articleId/"
+      "all": "/app/language/:languageId/articles/",
+      "details": "/app/article/:articleId/"
     }
   }
 }

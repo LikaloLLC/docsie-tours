@@ -17,12 +17,11 @@
   },
   "scripts": {
     "build": "webpack --mode production",
-    "clean": "rm -rf dist",
+    "clean": "rimraf dist",
+    "lint": "eslint .",
+    "format": "prettier --write .",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -43,9 +42,13 @@
     "babel-loader": "^8.1.0",
     "copy-webpack-plugin": "^6.0.3",
     "css-loader": "^3.6.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "html-loader": "^1.1.0",
     "html-webpack-plugin": "^4.3.0",
     "mini-css-extract-plugin": "^0.9.0",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
     "sass-loader": "^10.0.2",
     "style-loader": "^1.2.1",
     "webpack-cli": "^3.3.12",

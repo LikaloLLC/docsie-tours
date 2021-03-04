@@ -17,9 +17,7 @@
     "https://*/*"
   ],
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "scripts": ["background.js"]
   },
   "manifest_version": 2,
   "browser_action": {
@@ -30,13 +28,9 @@
     "default_popup": "popup.html",
     "default_title": "Docsie.io"
   },
-  "web_accessible_resources": [
-    "index.html"
-  ],
+  "web_accessible_resources": ["index.html"],
   "externally_connectable": {
-    "ids": [
-      "*"
-    ],
+    "ids": ["*"],
     "matches": [
       "https://*.docsie.io/*",
       "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/*",

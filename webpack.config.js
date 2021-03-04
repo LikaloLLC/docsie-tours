@@ -1,7 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const path = require("path");
 
 module.exports = {
   entry: {
@@ -9,7 +8,7 @@ module.exports = {
     popup: "./src/popup/index.js",
     background: "./src/pagescripts/background/index.js",
     highlight: "./src/pagescripts/highlight/index.js",
-    inject: "./src/pagescripts/inject/index.js"
+    inject: "./src/pagescripts/inject/index.js",
   },
 
   module: {

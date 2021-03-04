@@ -12,12 +12,12 @@ import {
 
 const domain = Config.urls.base;
 const csrfcookie = "csrftoken";
-let tourOriginUrl, cookie, user, shelfs, books, flows, flow, flowId;
+let tourOriginUrl, cookie, user, shelfs, books, flows, flow;
 
 function getCookies(domain, name, callback) {
   chrome.cookies.get({ url: domain, name }, function (cookie) {
     if (callback) {
-      if(cookie && cookie.value) {
+      if (cookie && cookie.value) {
         callback(cookie.value);
       } else {
         callback(null);
@@ -56,8 +56,12 @@ chrome.runtime.onConnect.addListener(async function (port) {
         port.postMessage({ shelfs });
       }
       if (data.message === "create new flow") {
-        flow = await newFlow(data.title, data.languageId, tourOriginUrl, cookie);
-        flowId = flow.data.id;
+        flow = await newFlow(
+          data.title,
+          data.languageId,
+          tourOriginUrl,
+          cookie
+        );
         port.postMessage({ flow });
       }
       if (data.message === "cancel") {
@@ -72,7 +76,6 @@ chrome.runtime.onConnect.addListener(async function (port) {
         port.postMessage({ flows });
       }
       if (data.flowId) {
-        flowId = data.flowId;
         flow = await getFlow(data.flowId, cookie);
         port.postMessage({ flow });
       }
@@ -102,7 +105,6 @@ chrome.runtime.onConnect.addListener(async function (port) {
 
 chrome.runtime.onMessageExternal.addListener(async (data) => {
   if (data.url) {
-    flowId = data.flowId;
     flow = await getFlow(data.flowId, cookie);
     chrome.tabs.create(
       {
@@ -112,7 +114,7 @@ chrome.runtime.onMessageExternal.addListener(async (data) => {
         chrome.tabs.executeScript({ file: "/highlight.js" });
         chrome.tabs.executeScript({ file: "/inject.js" });
         chrome.tabs.onUpdated.addListener((tabId, info) => {
-          if (info.status === "complete"&& tabId===tab.id) {
+          if (info.status === "complete" && tabId === tab.id) {
             chrome.tabs.sendMessage(tabId, { flow });
           }
         });

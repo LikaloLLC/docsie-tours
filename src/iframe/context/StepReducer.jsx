@@ -1,15 +1,15 @@
-export default (state, action) => {
+const stepReducer = (state, action) => {
   switch (action.type) {
     case "SETTING_FLOW":
       return {
         ...state,
-        steps: action.payload
-      }
+        steps: action.payload,
+      };
     case "SETTING_FLOW_ID":
-      return{
+      return {
         ...state,
-        flowId: action.payload
-      }
+        flowId: action.payload,
+      };
     case "ADD_STEP":
       let _steps = [...state.steps];
       _steps.push(action.payload);
@@ -30,9 +30,11 @@ export default (state, action) => {
     case "SET_SUBJECT":
       return {
         ...state,
-        subjectName: action.payload
-      }
+        subjectName: action.payload,
+      };
     default:
       return state;
   }
 };
+
+export default stepReducer;
