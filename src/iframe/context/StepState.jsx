@@ -4,6 +4,7 @@ import StepReducer from "./StepReducer";
 const initialState = {
   tourTitle: null,
   steps: null,
+  flowId: null,
 };
 
 export const StepContext = createContext(initialState);
@@ -19,6 +20,17 @@ export const StepProvider = ({ children }) => {
       });
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  function setFlowId(flowId) {
+    try {
+      dispatch({
+        type: "SETTING_FLOW_ID",
+        payload: flowId
+      })
+    } catch (err) {
+      console.log(err)      
     }
   }
 
@@ -87,7 +99,9 @@ export const StepProvider = ({ children }) => {
       value={{
         steps: state.steps,
         tourTitle: state.tourTitle,
+        flowId: state.flowId,
         setFlow,
+        setFlowId,
         setTourTitle,
         addStep,
         deleteStep,

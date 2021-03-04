@@ -1,6 +1,6 @@
 {
   "urls": {
-    "base": "http://ec2-54-224-135-131.compute-1.amazonaws.com:8003/",
+    "base": "https://beta.docsie.io/",
     "auth": {
       "user": "/rest-auth/user/"
     },

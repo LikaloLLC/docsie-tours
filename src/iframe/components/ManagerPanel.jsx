@@ -10,6 +10,7 @@ const ManagerPanel = () => {
     setTourTitle,
     tourTitle,
     steps,
+    flowId,
     addStep,
     deleteStep,
     editStep,
@@ -86,6 +87,7 @@ const ManagerPanel = () => {
       message: "save tour",
       tour: steps,
       title: tourTitle,
+      flowId
     });
   };
 

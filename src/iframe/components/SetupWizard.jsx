@@ -3,7 +3,7 @@ import Dropdown from "./Dropdown";
 import { StepContext } from "../context/StepState";
 
 const SetupWizard = () => {
-  const { setFlow, setTourTitle } = useContext(StepContext);
+  const { setFlow, setTourTitle, setFlowId } = useContext(StepContext);
 
   const [shelfs, setShelfs] = useState();
   const [books, setBooks] = useState();
@@ -58,14 +58,22 @@ const SetupWizard = () => {
     });
   };
   const ChooseFlow = (flowId) => {
-    port.postMessage({ flowId });
+    flows.map((flow) => {
+      if(flow.id === flowId) {
+        setFlowId(flow.id)
+        setFlow(flow.doc.steps)
+        setTourTitle(flow.name);
+      }
+    })
+    
+    /* port.postMessage({ flowId });
     port.onMessage.addListener((msg) => {
       if (msg.flow) {
         let steps = JSON.parse(msg.flow.data.doc.steps);
         setTourTitle(msg.flow.data.name);
         setFlow(steps);
       }
-    });
+    }); */
   };
 
   const createFlow = () => {

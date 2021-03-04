@@ -43,7 +43,7 @@ chrome.runtime.onConnect.addListener(async function (port) {
         chrome.tabs.sendMessage(data.tabId, { message: data.message });
       }
       if (data.message === "save tour") {
-        saveFlow(cookie, tourOriginUrl, data.title, data.tour, flowId);
+        saveFlow(cookie, tourOriginUrl, data.title, data.tour, data.flowId);
       }
     });
   }

@@ -4,33 +4,32 @@ const Dropdown = ({ subject, setId, subjectName }) => {
   const [isLocked, setIsLocked] = useState(true);
 
   useEffect(() => {
-    !subject ? setIsLocked(true) : null;
+    !subject && setIsLocked(true);
   }, [subject]);
 
   return (
     <>
       <select
         class="custom-select"
-        disabled={`${!subject ? "true" : ""}`}
+        disabled={!subject}
         onChange={(e) => {
-          console.log("value", e.target.value);
           setIsLocked(false);
           setId(e.target.value);
         }}>
         <option value="" selected={isLocked} disabled hidden>
-          {subject ? `Choose ${subjectName}` : null}
+          {subject && `Choose ${subjectName}`}
         </option>
         {subject
-          ? subject.map((el) => {
+          && subject.map((el) => {
               return (
                 <option
-                  value={el.language ? el.language.id : el.id}
+                  value={el.language && el.language.id ? el.language.id : el.id}
+                  //value={el.language ? el.language.id : el.id}
                   key={el.id}>
                   {el.name}
                 </option>
               );
-            })
-          : null}
+            })}
       </select>
     </>
   );
