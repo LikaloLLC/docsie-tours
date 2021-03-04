@@ -4,11 +4,11 @@ import React, {
   useContext,
   useRef,
   useCallback,
-} from "react";
-import SetupWizard from "./SetupWizard";
-import Step from "./Step";
-import Navbar from "./Navbar";
-import { StepContext } from "../context/StepState";
+} from 'react';
+import SetupWizard from './SetupWizard';
+import Step from './Step';
+import Navbar from './Navbar';
+import { StepContext } from '../context/StepState';
 
 /* global chrome */
 const ManagerPanel = () => {
@@ -23,7 +23,7 @@ const ManagerPanel = () => {
     editStep,
   } = useContext(StepContext);
 
-  const [status, setStatus] = useState("Minimize");
+  const [status, setStatus] = useState('Minimize');
   const [selector, setSelector] = useState(null);
   const portRef = useRef(null);
   const stepIdRef = useRef();
@@ -38,7 +38,7 @@ const ManagerPanel = () => {
 
   useEffect(() => {
     portRef.current = chrome.runtime.connect(chrome.runtime.id, {
-      name: "ManagerPanel",
+      name: 'ManagerPanel',
     });
 
     return () => {
@@ -48,7 +48,7 @@ const ManagerPanel = () => {
 
   useEffect(() => {
     const onMessage = (msg) => {
-      if (typeof msg.message === "string") {
+      if (typeof msg.message === 'string') {
         setSelector(msg.message);
       }
       if (msg.flow) {
@@ -65,7 +65,7 @@ const ManagerPanel = () => {
   }, [setFlow, setTourTitle]);
 
   const changeStatus = useCallback(() => {
-    setStatus(status === "Minimize" ? "Maximize" : "Minimize");
+    setStatus(status === 'Minimize' ? 'Maximize' : 'Minimize');
     chrome.tabs.getCurrent((tab) => {
       chrome.tabs.sendMessage(tab.id, { message: status });
     });
@@ -73,9 +73,9 @@ const ManagerPanel = () => {
 
   const selectorRequest = (stepId) => {
     stepIdRef.current = stepId;
-    if (typeof stepId === "number")
+    if (typeof stepId === 'number')
       chrome.tabs.getCurrent((tab) => {
-        chrome.tabs.sendMessage(tab.id, { message: "selector request" });
+        chrome.tabs.sendMessage(tab.id, { message: 'selector request' });
         changeStatus();
       });
   };
@@ -86,13 +86,13 @@ const ManagerPanel = () => {
 
   const cancelGuide = () => {
     chrome.tabs.getCurrent((tab) => {
-      portRef.current.postMessage({ message: "cancel", tabId: tab.id });
+      portRef.current.postMessage({ message: 'cancel', tabId: tab.id });
     });
   };
 
   const saveTour = () => {
     portRef.current.postMessage({
-      message: "save tour",
+      message: 'save tour',
       tour: steps,
       title: tourTitle,
       flowId,
@@ -102,7 +102,7 @@ const ManagerPanel = () => {
   useEffect(() => {
     if (prevSelector.current !== selector) {
       prevSelector.current = selector;
-      editStep(stepIdRef.current, selector, "selector");
+      editStep(stepIdRef.current, selector, 'selector');
       changeStatus();
       setSelector(null);
     }

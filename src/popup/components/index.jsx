@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import Config from "../../config.json";
+import React, { useState, useEffect, useRef } from 'react';
+import Config from '../../config.json';
 
 /* global chrome */
 const ShelfSelector = () => {
@@ -9,7 +9,7 @@ const ShelfSelector = () => {
 
   useEffect(() => {
     portRef.current = chrome.runtime.connect(chrome.runtime.id, {
-      name: "popup",
+      name: 'popup',
     });
     const onMessage = (msg) => {
       if (msg.status) {
@@ -26,13 +26,13 @@ const ShelfSelector = () => {
 
   return (
     <div className="main d-flex flex-column ">
-      {loginStatus === "logged in" ? (
+      {loginStatus === 'logged in' ? (
         <>
           <a
             className="btn elements btns btn-secondary"
             onClick={() => {
               portRef.current.postMessage({
-                message: "start record",
+                message: 'start record',
               });
               window.close();
             }}

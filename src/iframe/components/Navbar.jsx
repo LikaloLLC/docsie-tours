@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { StepContext } from "../context/StepState";
+import React, { useState, useContext } from 'react';
+import { StepContext } from '../context/StepState';
 
 const Navbar = ({ cancelGuide, changeStatus, status, saveTour }) => {
   const { tourTitle, setTourTitle, setFlow } = useContext(StepContext);

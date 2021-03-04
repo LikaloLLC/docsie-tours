@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { StepContext } from "../context/StepState";
+import React, { useContext } from 'react';
+import { StepContext } from '../context/StepState';
 
 const Step = ({ step, deleteButton, selectorRequest }) => {
   const { steps, editStep } = useContext(StepContext);
@@ -64,7 +64,7 @@ const Step = ({ step, deleteButton, selectorRequest }) => {
               defaultValue={step.title}
               placeholder="Step title"
               onBlur={(e) =>
-                editStep(steps.indexOf(step), e.target.value, "title")
+                editStep(steps.indexOf(step), e.target.value, 'title')
               }
               className="form-control"
             />
@@ -78,16 +78,16 @@ const Step = ({ step, deleteButton, selectorRequest }) => {
               defaultValue={step.content}
               placeholder="Step content"
               onBlur={(e) =>
-                editStep(steps.indexOf(step), e.target.value, "content")
+                editStep(steps.indexOf(step), e.target.value, 'content')
               }
               className="form-control"
             />
           </div>
           <small
             className="d-inline-block text-truncate"
-            style={{ maxWidth: "230px" }}
+            style={{ maxWidth: '230px' }}
           >
-            {step.selector || "[no selector]"}
+            {step.selector || '[no selector]'}
           </small>
         </div>
       </form>

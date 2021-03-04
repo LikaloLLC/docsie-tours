@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
-import Dropdown from "./Dropdown";
-import { StepContext } from "../context/StepState";
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import Dropdown from './Dropdown';
+import { StepContext } from '../context/StepState';
 
 /* global chrome */
 const SetupWizard = () => {
@@ -16,9 +16,9 @@ const SetupWizard = () => {
 
   useEffect(() => {
     portRef.current = chrome.runtime.connect(chrome.runtime.id, {
-      name: "SetupWizard",
+      name: 'SetupWizard',
     });
-    portRef.current.postMessage({ message: "shelf request" });
+    portRef.current.postMessage({ message: 'shelf request' });
 
     const onMessage = (msg) => {
       if (msg.shelfs) {
@@ -41,7 +41,7 @@ const SetupWizard = () => {
 
   const closeExtension = () => {
     chrome.tabs.getCurrent((tab) => {
-      portRef.current.postMessage({ message: "cancel", tabId: tab.id });
+      portRef.current.postMessage({ message: 'cancel', tabId: tab.id });
     });
   };
 
@@ -71,7 +71,7 @@ const SetupWizard = () => {
 
   const createFlow = () => {
     portRef.current.postMessage({
-      message: "create new flow",
+      message: 'create new flow',
       title,
       languageId,
     });
@@ -84,7 +84,7 @@ const SetupWizard = () => {
   };
 
   const newFlowButtonClass = `btn btn-secondary btn-lg btn-block ${
-    !flows ? "disabled" : null
+    !flows ? 'disabled' : null
   }`;
   return (
     <>
@@ -163,7 +163,7 @@ const SetupWizard = () => {
                   </label>
                   <input
                     type="email"
-                    disabled={`${!newFlow ? "true" : ""}`}
+                    disabled={`${!newFlow ? 'true' : ''}`}
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
@@ -174,7 +174,7 @@ const SetupWizard = () => {
                   <label for="exampleFormControlSelect1">and</label>
                   <button
                     className="btn btn-primary btn-lg btn-block"
-                    disabled={`${!title && !newFlow ? "true" : ""}`}
+                    disabled={`${!title && !newFlow ? 'true' : ''}`}
                     onClick={() => createFlow()}
                   >
                     Define flow steps

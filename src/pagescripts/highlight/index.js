@@ -11,7 +11,7 @@ function onPanelHover(e) {
   if (target.dataset.index === undefined) return false;
   const index = parseInt(target.dataset.index);
   if (isNaN(index)) return;
-  const path = _path.slice(0, index + 1).join(">");
+  const path = _path.slice(0, index + 1).join('>');
   if (!path) return;
   const frag = document.querySelector(path);
   highlightTarget(frag);
@@ -24,25 +24,25 @@ function onPanelClick(e) {
   if (target.dataset.index === undefined) return false;
   const index = parseInt(target.dataset.index);
   if (isNaN(index)) return;
-  const path = _path.slice(0, index + 1).join(">");
+  const path = _path.slice(0, index + 1).join('>');
   updatePanel(path);
 }
 
 function getPanelEl() {
   if (!_panel) {
-    _panel = document.createElement("div");
-    _panel.id = "__managerExtentionPanel";
+    _panel = document.createElement('div');
+    _panel.id = '__managerExtentionPanel';
     _panel.innerHTML =
       PanelStyle + "<div id='__managerExtentionPanel__body'></div>";
-    _panel.addEventListener("mousemove", onPanelHover);
-    _panel.addEventListener("click", onPanelClick);
+    _panel.addEventListener('mousemove', onPanelHover);
+    _panel.addEventListener('click', onPanelClick);
   }
-  return _panel.querySelector("#__managerExtentionPanel__body");
+  return _panel.querySelector('#__managerExtentionPanel__body');
 }
 
 function updatePanel(path) {
   const panel = getPanelEl();
-  const frags = path.split(">");
+  const frags = path.split('>');
   if (!!path) {
     const view =
       "<div class='__managerExtentionPanel__path'>" +
@@ -53,39 +53,39 @@ function updatePanel(path) {
             index +
             "'><span class='breadcrumb__inner'><span class='breadcrumb__title'>" +
             frag +
-            "</span></span></a>"
+            '</span></span></a>'
           );
         })
-        .join("") +
-      "</div>";
+        .join('') +
+      '</div>';
     panel.innerHTML = view;
   } else {
-    panel.innerHTML = "";
+    panel.innerHTML = '';
   }
   _path = frags;
 }
 
 function getOverlayEl() {
   if (!_overlay) {
-    _overlay = document.createElement("div");
-    _overlay.style.pointerEvents = "none";
-    _overlay.style.position = "fixed";
-    _overlay.style.border = "2px solid blue";
-    _overlay.style.boxShadow = "0 0 0 999em rgba(0,0,0,0.4)";
-    _overlay.style.zIndex = "9999";
+    _overlay = document.createElement('div');
+    _overlay.style.pointerEvents = 'none';
+    _overlay.style.position = 'fixed';
+    _overlay.style.border = '2px solid blue';
+    _overlay.style.boxShadow = '0 0 0 999em rgba(0,0,0,0.4)';
+    _overlay.style.zIndex = '9999';
   }
   return _overlay;
 }
 
 function getPseudo(sibIndex, sibLength) {
-  if (sibLength < 2) return "";
+  if (sibLength < 2) return '';
   switch (true) {
     case sibIndex === 0:
-      return ":first-of-type";
+      return ':first-of-type';
     case sibIndex === sibLength - 1:
-      return ":last-of-type";
+      return ':last-of-type';
     default:
-      return ":nth-of-type(" + (sibIndex + 1) + ")";
+      return ':nth-of-type(' + (sibIndex + 1) + ')';
   }
 }
 
@@ -106,9 +106,9 @@ function getDomPath(el) {
         sibCount++;
       }
     }
-    if (el.hasAttribute("id") && el.id) {
-      stack.unshift(el.nodeName.toLowerCase() + "#" + el.id);
-      stack.unshift("");
+    if (el.hasAttribute('id') && el.id) {
+      stack.unshift(el.nodeName.toLowerCase() + '#' + el.id);
+      stack.unshift('');
       loop = false;
     } else if (sibCount > 1) {
       stack.unshift(
@@ -127,9 +127,9 @@ function getDomPath(el) {
 function getElementFullPath(el) {
   switch (true) {
     case Boolean(el.id):
-      return "#" + el.id;
+      return '#' + el.id;
     default:
-      return getDomPath(el).join(">");
+      return getDomPath(el).join('>');
   }
 }
 
@@ -137,10 +137,10 @@ function highlightTarget(target) {
   if (target) {
     const overlay = getOverlayEl();
     const rect = target.getBoundingClientRect();
-    overlay.style.top = rect.top + "px";
-    overlay.style.left = rect.left + "px";
-    overlay.style.width = rect.width + "px";
-    overlay.style.height = rect.height + "px";
+    overlay.style.top = rect.top + 'px';
+    overlay.style.left = rect.left + 'px';
+    overlay.style.width = rect.width + 'px';
+    overlay.style.height = rect.height + 'px';
   }
 }
 
@@ -164,8 +164,8 @@ function onElementClick(e) {
 function showOverlay() {
   if (_enabled) return;
 
-  document.addEventListener("mousemove", onElementHover);
-  document.addEventListener("click", onElementClick);
+  document.addEventListener('mousemove', onElementHover);
+  document.addEventListener('click', onElementClick);
   _enabled = true;
   document.body.appendChild(_overlay);
   document.body.appendChild(_panel);
@@ -176,8 +176,8 @@ function hideOverlay() {
   _overlay.remove();
   _panel.remove();
   highlightTarget(document.body);
-  document.removeEventListener("mousemove", onElementHover);
-  document.removeEventListener("click", onElementClick);
+  document.removeEventListener('mousemove', onElementHover);
+  document.removeEventListener('click', onElementClick);
   _enabled = false;
 }
 
@@ -188,7 +188,7 @@ function init() {
 }
 
 chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.message === "selector request") init();
+  if (msg.message === 'selector request') init();
 });
 
 chrome.extension.onMessage.addListener(function (
@@ -196,9 +196,9 @@ chrome.extension.onMessage.addListener(function (
   sender,
   sendResponse
 ) {
-  console.log("request.message", request.message);
+  console.log('request.message', request.message);
   switch (request.message) {
-    case "cancel":
+    case 'cancel':
       hideOverlay();
       break;
     default:
@@ -208,7 +208,7 @@ chrome.extension.onMessage.addListener(function (
 
 chrome.extension.sendMessage({}, function (response) {
   const readyStateCheckInterval = setInterval(function () {
-    if (document.readyState === "complete") {
+    if (document.readyState === 'complete') {
       clearInterval(readyStateCheckInterval);
     }
   }, 10);

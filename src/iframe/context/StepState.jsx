@@ -1,5 +1,5 @@
-import React, { createContext, useReducer, useCallback } from "react";
-import StepReducer from "./StepReducer";
+import React, { createContext, useReducer, useCallback } from 'react';
+import StepReducer from './StepReducer';
 
 const initialState = {
   tourTitle: null,
@@ -15,7 +15,7 @@ export const StepProvider = ({ children }) => {
   const setFlow = useCallback((flow) => {
     try {
       dispatch({
-        type: "SETTING_FLOW",
+        type: 'SETTING_FLOW',
         payload: flow,
       });
     } catch (err) {
@@ -26,7 +26,7 @@ export const StepProvider = ({ children }) => {
   const setFlowId = useCallback((flowId) => {
     try {
       dispatch({
-        type: "SETTING_FLOW_ID",
+        type: 'SETTING_FLOW_ID',
         payload: flowId,
       });
     } catch (err) {
@@ -37,7 +37,7 @@ export const StepProvider = ({ children }) => {
   const setTourTitle = useCallback((title) => {
     try {
       dispatch({
-        type: "TITLE_CHANGE",
+        type: 'TITLE_CHANGE',
         payload: title,
       });
     } catch (err) {
@@ -48,7 +48,7 @@ export const StepProvider = ({ children }) => {
   const addStep = useCallback((step) => {
     try {
       dispatch({
-        type: "ADD_STEP",
+        type: 'ADD_STEP',
         payload: step,
       });
     } catch (err) {
@@ -69,7 +69,7 @@ export const StepProvider = ({ children }) => {
       });
       try {
         dispatch({
-          type: "DELETE_STEP",
+          type: 'DELETE_STEP',
           payload: _steps,
         });
       } catch (err) {
@@ -83,13 +83,13 @@ export const StepProvider = ({ children }) => {
     (id, data, type) => {
       try {
         switch (type) {
-          case "title":
+          case 'title':
             state.steps[id].title = data;
             break;
-          case "content":
+          case 'content':
             state.steps[id].content = data;
             break;
-          case "selector":
+          case 'selector':
             state.steps[id].selector = data;
             break;
           default:

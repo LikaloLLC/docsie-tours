@@ -1,20 +1,20 @@
-import Config from "../config.json";
+import Config from '../config.json';
 const ABSOLUTE_URL = /(^\/\/|^http)/;
 
 export class URI {
-  static Clean(url = "") {
-    return url.replace(/([^:]\/|^\/)\/+/g, "$1");
+  static Clean(url = '') {
+    return url.replace(/([^:]\/|^\/)\/+/g, '$1');
   }
-  static IsURL(url = "") {
+  static IsURL(url = '') {
     return ABSOLUTE_URL.test(url);
   }
   constructor(url, params = {}) {
-    let _groups = url.split("/");
+    let _groups = url.split('/');
     let _params = _groups
       .filter((name) => /^:/.test(name))
       .map((name) => name.substring(1))
       .reduce((o, key) => {
-        o[key] = "";
+        o[key] = '';
         return o;
       }, {});
     this._url = url;
@@ -35,7 +35,7 @@ export class URI {
     const { params } = this;
     var url = this._url;
     Object.keys(params).forEach((key) => {
-      let regExp = new RegExp(`:${key}`, "g");
+      let regExp = new RegExp(`:${key}`, 'g');
       url = url.replace(regExp, params[key]);
     });
     return this._absolute ? URI.Clean(url) : URI.Clean(this._base + url);
