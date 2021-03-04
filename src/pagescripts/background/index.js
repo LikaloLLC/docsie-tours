@@ -17,13 +17,19 @@ let tourOriginUrl, cookie, user, shelfs, books, flows, flow, flowId;
 function getCookies(domain, name, callback) {
   chrome.cookies.get({ url: domain, name }, function (cookie) {
     if (callback) {
-      callback(cookie.value);
+      if(cookie && cookie.value) {
+        callback(cookie.value);
+      } else {
+        callback(null);
+      }
     }
   });
 }
+
 function getCSRFCookie(then) {
   getCookies(domain, csrfcookie, then);
 }
+
 getCSRFCookie((id) => {
   cookie = id;
 });
