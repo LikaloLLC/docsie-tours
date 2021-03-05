@@ -64,19 +64,19 @@ const ManagerPanel = () => {
     };
   }, [setFlow, setTourTitle]);
 
-  const changeStatus = useCallback(() => {
-    setStatus(status === 'Minimize' ? 'Maximize' : 'Minimize');
+  const changeStatus = useCallback((nextStatus) => {
+    setStatus(nextStatus);
     chrome.tabs.getCurrent((tab) => {
-      chrome.tabs.sendMessage(tab.id, { message: status });
+      chrome.tabs.sendMessage(tab.id, { message: nextStatus });
     });
-  }, [status]);
+  }, []);
 
   const selectorRequest = (stepId) => {
     stepIdRef.current = stepId;
     if (typeof stepId === 'number')
       chrome.tabs.getCurrent((tab) => {
         chrome.tabs.sendMessage(tab.id, { message: 'selector request' });
-        changeStatus();
+        changeStatus('Minimize');
       });
   };
 
@@ -100,12 +100,12 @@ const ManagerPanel = () => {
   };
 
   useEffect(() => {
-    if (prevSelector.current !== selector) {
-      prevSelector.current = selector;
+    if (prevSelector.current !== selector && selector) {
       editStep(stepIdRef.current, selector, 'selector');
-      changeStatus();
+      changeStatus('Maximize');
       setSelector(null);
     }
+    prevSelector.current = selector;
   }, [changeStatus, editStep, selector]);
 
   return (

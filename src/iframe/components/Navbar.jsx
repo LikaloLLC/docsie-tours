@@ -21,7 +21,12 @@ const Navbar = ({ cancelGuide, changeStatus, status, saveTour }) => {
         />
       </form>
       <div className=" btn-group ml-auto" role="group">
-        <button className="btn btn-default" onClick={() => changeStatus()}>
+        <button
+          className="btn btn-default"
+          onClick={() =>
+            changeStatus(status === 'Minimize' ? 'Maximize' : 'Minimize')
+          }
+        >
           {status}
         </button>
         <button className="btn btn-default" onClick={() => setFlow(null)}>
