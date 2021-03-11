@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/bootstrap-docsie.css';
+import '../assets/css/bootstrap-docsie.css';
 import './App.css';
 import ManagerPanel from './components/ManagerPanel';
 
