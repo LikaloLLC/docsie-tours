@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
-import Dropdown from "./Dropdown";
-import { StepContext } from "../context/StepState";
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import Dropdown from './Dropdown';
+import { StepContext } from '../context/StepState';
 
+/* global chrome */
 const SetupWizard = () => {
   const { setFlow, setTourTitle, setFlowId } = useContext(StepContext);
 
@@ -11,26 +12,36 @@ const SetupWizard = () => {
   const [flows, setFlows] = useState();
   const [title, setTitle] = useState();
   const [newFlow, setNewFlow] = useState(false);
-
-  const port = chrome.runtime.connect(chrome.runtime.id, {
-    name: "SetupWizard",
-  });
+  const portRef = useRef(null);
 
   useEffect(() => {
-    port.postMessage({ message: "shelf request" });
-    port.onMessage.addListener((msg) => {
+    portRef.current = chrome.runtime.connect(chrome.runtime.id, {
+      name: 'SetupWizard',
+    });
+    portRef.current.postMessage({ message: 'shelf request' });
+
+    const onMessage = (msg) => {
       if (msg.shelfs) {
         setShelfs(msg.shelfs.data);
       }
-    });
+      if (msg.flows) {
+        setFlows(msg.flows.data);
+      }
+      if (msg.books) {
+        setBooks(msg.books);
+      }
+    };
+    portRef.current.onMessage.addListener(onMessage);
+
     return () => {
-      port.disconnect();
+      portRef.current.onMessage.removeListener(onMessage);
+      portRef.current.disconnect();
     };
   }, []);
 
   const closeExtension = () => {
     chrome.tabs.getCurrent((tab) => {
-      port.postMessage({ message: "cancel", tabId: tab.id });
+      portRef.current.postMessage({ message: 'cancel', tabId: tab.id });
     });
   };
 
@@ -39,46 +50,32 @@ const SetupWizard = () => {
     setFlows();
     setNewFlow(false);
     setLanguageId();
-    port.postMessage({ shelfId });
-    port.onMessage.addListener((msg) => {
-      if (msg.books) {
-        setBooks(msg.books);
-      }
-    });
+    portRef.current.postMessage({ shelfId });
   };
+
   const setBook = (languageId) => {
     setFlows();
     setNewFlow(false);
     setLanguageId(languageId);
-    port.postMessage({ languageId });
-    port.onMessage.addListener((msg) => {
-      if (msg.flows) {
-        setFlows(msg.flows.data);
-      }
-    });
+    portRef.current.postMessage({ languageId });
   };
+
   const ChooseFlow = (flowId) => {
-    flows.map((flow) => {
-      if(flow.id === flowId) {
-        setFlowId(flow.id)
-        setFlow(flow.doc.steps)
-        setTourTitle(flow.name);
-      }
-    })
-    
-    /* port.postMessage({ flowId });
-    port.onMessage.addListener((msg) => {
-      if (msg.flow) {
-        let steps = JSON.parse(msg.flow.data.doc.steps);
-        setTourTitle(msg.flow.data.name);
-        setFlow(steps);
-      }
-    }); */
+    const flow = flows.find((f) => f.id === flowId);
+    if (!flow) return;
+
+    setFlowId(flow.id);
+    setFlow(flow.doc.steps);
+    setTourTitle(flow.name);
   };
 
   const createFlow = () => {
-    port.postMessage({ message: "create new flow", title, languageId });
-    port.onMessage.addListener((msg) => {
+    portRef.current.postMessage({
+      message: 'create new flow',
+      title,
+      languageId,
+    });
+    portRef.current.onMessage.addListener((msg) => {
       if (msg.flow) {
         setTourTitle(msg.flow.data.name);
         setFlow([]);
@@ -87,7 +84,7 @@ const SetupWizard = () => {
   };
 
   const newFlowButtonClass = `btn btn-secondary btn-lg btn-block ${
-    !flows ? "disabled" : null
+    !flows ? 'disabled' : null
   }`;
   return (
     <>
@@ -95,7 +92,8 @@ const SetupWizard = () => {
         <h1>Setup wizard</h1>
         <button
           className="btn btn-default ml-auto"
-          onClick={() => closeExtension()}>
+          onClick={() => closeExtension()}
+        >
           Close
         </button>
       </div>
@@ -148,7 +146,8 @@ const SetupWizard = () => {
                     <button
                       className={newFlowButtonClass}
                       type="button"
-                      onClick={() => setNewFlow(true)}>
+                      onClick={() => setNewFlow(true)}
+                    >
                       Start a new flow
                     </button>
                   </div>
@@ -164,7 +163,7 @@ const SetupWizard = () => {
                   </label>
                   <input
                     type="email"
-                    disabled={`${!newFlow ? "true" : ""}`}
+                    disabled={`${!newFlow ? 'true' : ''}`}
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
@@ -175,8 +174,9 @@ const SetupWizard = () => {
                   <label for="exampleFormControlSelect1">and</label>
                   <button
                     className="btn btn-primary btn-lg btn-block"
-                    disabled={`${!title && !newFlow ? "true" : ""}`}
-                    onClick={() => createFlow()}>
+                    disabled={`${!title && !newFlow ? 'true' : ''}`}
+                    onClick={() => createFlow()}
+                  >
                     Define flow steps
                   </button>
                 </div>

@@ -1,5 +1,5 @@
-import React, { createContext, useReducer } from "react";
-import StepReducer from "./StepReducer";
+import React, { createContext, useReducer, useCallback } from 'react';
+import StepReducer from './StepReducer';
 
 const initialState = {
   tourTitle: null,
@@ -12,87 +12,95 @@ export const StepContext = createContext(initialState);
 export const StepProvider = ({ children }) => {
   const [state, dispatch] = useReducer(StepReducer, initialState);
 
-  function setFlow(flow) {
+  const setFlow = useCallback((flow) => {
     try {
       dispatch({
-        type: "SETTING_FLOW",
+        type: 'SETTING_FLOW',
         payload: flow,
       });
     } catch (err) {
       console.log(err);
     }
-  }
+  }, []);
 
-  function setFlowId(flowId) {
+  const setFlowId = useCallback((flowId) => {
     try {
       dispatch({
-        type: "SETTING_FLOW_ID",
-        payload: flowId
-      })
+        type: 'SETTING_FLOW_ID',
+        payload: flowId,
+      });
     } catch (err) {
-      console.log(err)      
+      console.log(err);
     }
-  }
+  }, []);
 
-  function setTourTitle(title) {
+  const setTourTitle = useCallback((title) => {
     try {
       dispatch({
-        type: "TITLE_CHANGE",
+        type: 'TITLE_CHANGE',
         payload: title,
       });
     } catch (err) {
       console.log(err);
     }
-  }
+  }, []);
 
-  function addStep(step) {
+  const addStep = useCallback((step) => {
     try {
       dispatch({
-        type: "ADD_STEP",
+        type: 'ADD_STEP',
         payload: step,
       });
     } catch (err) {
       console.log(err);
     }
-  }
+  }, []);
 
-  function deleteStep(id) {
-    let _steps = state.steps;
-    let a = _steps.splice(id, 1);
-    state.steps = [..._steps];
-    console.log(id, _steps, a);
+  const deleteStep = useCallback(
+    (id) => {
+      let _steps = state.steps;
+      let a = _steps.splice(id, 1);
+      state.steps = [..._steps];
+      console.log(id, _steps, a);
 
-    //change order
-    _steps.map((el) => {
-      el.step = _steps.indexOf(el) + 1;
-    });
-    try {
-      dispatch({
-        type: "DELETE_STEP",
-        payload: _steps,
+      //change order
+      _steps.forEach((el) => {
+        el.step = _steps.indexOf(el) + 1;
       });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  function editStep(id, data, type) {
-    try {
-      switch (type) {
-        case "title":
-          state.steps[id].title = data;
-          break;
-        case "content":
-          state.steps[id].content = data;
-          break;
-        case "selector":
-          state.steps[id].selector = data;
-          break;
+      try {
+        dispatch({
+          type: 'DELETE_STEP',
+          payload: _steps,
+        });
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
-    }
-  }
+    },
+    [state]
+  );
+
+  const editStep = useCallback(
+    (id, data, type) => {
+      try {
+        switch (type) {
+          case 'title':
+            state.steps[id].title = data;
+            break;
+          case 'content':
+            state.steps[id].content = data;
+            break;
+          case 'selector':
+            state.steps[id].selector = data;
+            break;
+          default:
+            break;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [state.steps]
+  );
 
   return (
     <StepContext.Provider
@@ -106,7 +114,8 @@ export const StepProvider = ({ children }) => {
         addStep,
         deleteStep,
         editStep,
-      }}>
+      }}
+    >
       {children}
     </StepContext.Provider>
   );

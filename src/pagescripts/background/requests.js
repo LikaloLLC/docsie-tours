@@ -1,12 +1,12 @@
-import axios from "axios";
-import { URI } from "../../utils";
-import Config from "../../config.json";
+import axios from 'axios';
+import { URI } from '../../utils';
+import Config from '../../config.json';
 
 export async function getUser(token) {
   const config = {
     headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": token,
+      'Content-Type': 'application/json',
+      'X-CSRFToken': token,
     },
   };
   try {
@@ -21,8 +21,8 @@ export async function getShelfs(user, token) {
   //headers
   const config = {
     headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": token,
+      'Content-Type': 'application/json',
+      'X-CSRFToken': token,
     },
   };
 
@@ -43,8 +43,8 @@ export async function getBooks(shelf, token) {
   //headers
   const config = {
     headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": token,
+      'Content-Type': 'application/json',
+      'X-CSRFToken': token,
     },
   };
 
@@ -53,10 +53,10 @@ export async function getBooks(shelf, token) {
       new URI(Config.urls.book.all, { shelfId: shelf }),
       config
     );
-    let tourBooks = []
-    books.data.map(book => {
-      book.type === "tour" ? tourBooks.push(book): null
-    })
+    let tourBooks = [];
+    books.data.forEach((book) => {
+      if (book.type === 'tour') tourBooks.push(book);
+    });
     return tourBooks;
   } catch (err) {
     console.log(err);
@@ -67,8 +67,8 @@ export async function getFlows(languageId, token) {
   //headers
   const config = {
     headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": token,
+      'Content-Type': 'application/json',
+      'X-CSRFToken': token,
     },
   };
   try {
@@ -88,8 +88,8 @@ export async function getFlow(flowId, token) {
   //headers
   const config = {
     headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": token,
+      'Content-Type': 'application/json',
+      'X-CSRFToken': token,
     },
   };
 
@@ -106,12 +106,12 @@ export async function getFlow(flowId, token) {
   }
 }
 
-export async function newFlow(title, languageId, url, token){
+export async function newFlow(title, languageId, url, token) {
   //headers
   const config = {
     headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": token,
+      'Content-Type': 'application/json',
+      'X-CSRFToken': token,
     },
   };
 
@@ -126,12 +126,12 @@ export async function newFlow(title, languageId, url, token){
         autorun: true,
         linked: false,
       },
-      steps: "",
+      steps: '',
     },
     tags: [],
-    template: "tour",
+    template: 'tour',
   };
-  
+
   try {
     const flow = await axios.post(
       new URI(Config.urls.article.all, {
@@ -140,19 +140,18 @@ export async function newFlow(title, languageId, url, token){
       articleData,
       config
     );
-    return flow
+    return flow;
   } catch (err) {
-    console.log(err)    
+    console.log(err);
   }
-
 }
 
 export async function saveFlow(token, url, title, tour, flowId) {
   //headers
   const config = {
     headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": token,
+      'Content-Type': 'application/json',
+      'X-CSRFToken': token,
     },
   };
   const articleData = {
@@ -169,7 +168,7 @@ export async function saveFlow(token, url, title, tour, flowId) {
       steps: JSON.stringify(tour),
     },
     tags: [],
-    template: "tour",
+    template: 'tour',
   };
   try {
     axios.put(
